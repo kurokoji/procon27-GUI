@@ -35,27 +35,28 @@ namespace WakuAndPiece {
       /* 今はテキストから読み込んでるだけ 5/22 */
 
       // フレーム,ピース情報を読み込む
-      StreamReader questReader = new StreamReader("quest.txt"); //readFrameprocess.StandardOutput;
-      problem = Problem.fromStream(questReader);
-      questReader.Close();
+      using (StreamReader questReader = new StreamReader("quest.txt")) { //readFrameprocess.StandardOutput;
+        problem = Problem.fromStream(questReader);
+      }
     }
 
     /* ソルバーにフレーム,ピース情報を出力 */
     private void outputSolve_Click(object sender, EventArgs e) {
       /*
-      Process writePicAnalysisprocess = new Process();
-      writePicAnalysisprocess.StartInfo.FileName = "";
-      writePicAnalysisprocess.StartInfo.UseShellExecute = false;
-      writePicAnalysisprocess.StartInfo.RedirectStandardInput = true;
-      writePicAnalysisprocess.Start();
+      Process writeprocess = new Process();
+      writeprocess.StartInfo.FileName = "";
+      writeprocess.StartInfo.UseShellExecute = false;
+      writeprocess.StartInfo.RedirectStandardInput = true;
+      writeprocess.Start();
       */
 
       /* 今はテキストに書き込んでるだけ */
 
       // フレーム,ピース情報を書き込む
-      StreamWriter toPicAnalysisWriter = new StreamWriter("toPic.txt"); // writePicAnalysisprocess.StandardOutput
-      problem.toStream(toPicAnalysisWriter);
-      toPicAnalysisWriter.Close();
+      using (StreamWriter picInfoWriter = new StreamWriter("toPic.txt")) { // writeprocess.StandardOutput
+        problem.toStream(picInfoWriter);
+      } 
+
     }
   }
   
@@ -96,9 +97,9 @@ namespace WakuAndPiece {
     public void toStream(StreamWriter sw) {
       // 要素数を出力
       sw.WriteLine(vertices.Length);
-      for (int i = 0; i < vertices.Length; i++) {
+      foreach (Vertex vertex in vertices) {
         // 座標を出力
-        sw.WriteLine("{0} {1}", vertices[i].X, vertices[i].Y);
+        sw.WriteLine("{0} {1}", vertex.X, vertex.Y);
       }
     }
   }
@@ -128,9 +129,9 @@ namespace WakuAndPiece {
     public void toStream(StreamWriter sw) {
       // 穴の数を書き込む
       sw.WriteLine(holes.Length);
-      for (int i = 0; i < holes.Length; i++) {
-        holes[i].toStream(sw);
-      }   
+      foreach (Hole hole in holes) {
+        hole.toStream(sw);
+      }
     }
   }
 
@@ -160,8 +161,8 @@ namespace WakuAndPiece {
       frame.toStream(sw);
       // ピースの数を出力
       sw.WriteLine(pieces.Length);
-      for (int i = 0; i < pieces.Length; i++) {
-        pieces[i].toStream(sw);
+      foreach (Piece piece in pieces) {
+        piece.toStream(sw);
       }
     }
   }
