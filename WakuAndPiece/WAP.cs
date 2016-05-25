@@ -71,6 +71,19 @@ namespace WakuAndPiece {
     }
   }
 
+  class PieceMove {
+    public Piece piece { get; }
+    public double X { get; }
+    public double Y { get; }
+    public double rad { get; }
+
+    public PieceMove(double x, double y, double rad) {
+      X = x;
+      Y = y;
+      this.rad = rad;
+    }
+  }
+
   // 図形(フレームの穴とピースに使われる)
   class Polygon {
     public Vertex[] vertices { get; }
