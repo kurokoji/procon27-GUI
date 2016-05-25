@@ -25,6 +25,7 @@
     private void InitializeComponent() {
       this.readFramePiece = new System.Windows.Forms.Button();
       this.outputSolve = new System.Windows.Forms.Button();
+      this.answerfromSolver = new System.Windows.Forms.Button();
       this.SuspendLayout();
       // 
       // readFramePiece
@@ -47,11 +48,22 @@
       this.outputSolve.UseVisualStyleBackColor = true;
       this.outputSolve.Click += new System.EventHandler(this.outputSolve_Click);
       // 
+      // answerfromSolver
+      // 
+      this.answerfromSolver.Location = new System.Drawing.Point(36, 156);
+      this.answerfromSolver.Name = "answerfromSolver";
+      this.answerfromSolver.Size = new System.Drawing.Size(110, 33);
+      this.answerfromSolver.TabIndex = 2;
+      this.answerfromSolver.Text = "answer";
+      this.answerfromSolver.UseVisualStyleBackColor = true;
+      this.answerfromSolver.Click += new System.EventHandler(this.answerfromSolver_Click);
+      // 
       // WakuAndPiece
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.ClientSize = new System.Drawing.Size(1188, 596);
+      this.Controls.Add(this.answerfromSolver);
       this.Controls.Add(this.outputSolve);
       this.Controls.Add(this.readFramePiece);
       this.Font = new System.Drawing.Font("Meiryo UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
@@ -66,6 +78,7 @@
 
     private System.Windows.Forms.Button readFramePiece;
     private System.Windows.Forms.Button outputSolve;
+    private System.Windows.Forms.Button answerfromSolver;
   }
 }
 
