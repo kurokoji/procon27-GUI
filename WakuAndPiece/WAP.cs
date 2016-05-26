@@ -180,5 +180,20 @@ namespace WakuAndPiece {
         piece.toStream(sw);
       }
     }
+
+    // 解答を読み込む
+    public void readAnswerStream(StreamReader sr) {
+      int N = int.Parse(sr.ReadLine());
+      PieceMove[] piecesMove = new PieceMove[N];
+      
+      for (int i = 0; i < N; i++) {
+        string[] tokens = sr.ReadLine().Split(' ');
+        int id = int.Parse(tokens[0]);
+        double x = double.Parse(tokens[1]);
+        double y = double.Parse(tokens[2]);
+        double rad = double.Parse(tokens[3]);
+        piecesMove[i] = new PieceMove(x, y, rad, pieces[id]);
+      }
+    }
   }
 }
