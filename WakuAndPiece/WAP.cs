@@ -71,16 +71,18 @@ namespace WakuAndPiece {
     }
   }
 
+  // 動かすピース情報
   class PieceMove {
     public Piece piece { get; }
     public double X { get; }
     public double Y { get; }
     public double rad { get; }
 
-    public PieceMove(double x, double y, double rad) {
+    public PieceMove(double x, double y, double rad, Piece piece) {
       X = x;
       Y = y;
       this.rad = rad;
+      this.piece = piece;
     }
   }
 
