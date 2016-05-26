@@ -58,8 +58,23 @@ namespace WakuAndPiece {
       } 
 
     }
+
+    /* 答えをSolverから受け取る */
+    private void answerfromSolver_Click(object sender, EventArgs e) {
+      /*
+      Process readprocess = new Process();
+      readprocess.StartInfo.FileName = "";
+      readprocess.StartInfo.UseShellExecute = false;
+      readprocess.StartInfo.RedirectStandardOutput = true;
+      readprocess.Start();
+      */
+
+      using (StreamReader answerReader = new StreamReader("answer.txt")) {
+        problem.readAnswerStream(answerReader);
+      }
+    }
   }
-  
+
   // 座標
   class Vertex {
     public double X { get; }
