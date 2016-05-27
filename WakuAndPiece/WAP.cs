@@ -124,6 +124,8 @@ namespace WakuAndPiece {
       }
       return (new Polygon(vertices));
     }
+       
+
     public void toStream(StreamWriter sw) {
       // 要素数を出力
       sw.WriteLine(vertices.Length);
@@ -168,6 +170,7 @@ namespace WakuAndPiece {
   class Problem {
     public Frame frame { get; }
     public Piece[] pieces { get; }
+
     // フレーム情報とピース情報をセットするコンストラクタ
     private Problem(Frame frame, Piece[] pieces) {
       this.frame = frame;
@@ -197,10 +200,9 @@ namespace WakuAndPiece {
     }
 
     // 解答を読み込む
-    public void readAnswerStream(StreamReader sr) {
+    public PieceMove[] readAnswerStream(StreamReader sr) {
       int N = int.Parse(sr.ReadLine());
       PieceMove[] piecesMove = new PieceMove[N];
-      
       for (int i = 0; i < N; i++) {
         string[] tokens = sr.ReadLine().Split(' ');
         int id = int.Parse(tokens[0]);
@@ -209,6 +211,7 @@ namespace WakuAndPiece {
         double rad = double.Parse(tokens[3]);
         piecesMove[i] = new PieceMove(x, y, rad, pieces[id]);
       }
+      return (piecesMove);
     }
   }
 }
