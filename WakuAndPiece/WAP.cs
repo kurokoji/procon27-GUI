@@ -20,6 +20,7 @@ namespace WakuAndPiece {
     }
 
     Problem problem;
+    PieceMove[] piecesMove;
 
     /* フレーム,ピース情報の読み込み */
     private void readFramePiece_Click(object sender, EventArgs e) {
@@ -56,7 +57,6 @@ namespace WakuAndPiece {
       using (StreamWriter picInfoWriter = new StreamWriter("toPic.txt")) { // writeprocess.StandardOutput
         problem.toStream(picInfoWriter);
       } 
-
     }
 
     /* 答えをSolverから受け取る */
@@ -70,8 +70,33 @@ namespace WakuAndPiece {
       */
 
       using (StreamReader answerReader = new StreamReader("answer.txt")) {
-        problem.readAnswerStream(answerReader);
+        piecesMove = problem.readAnswerStream(answerReader);
       }
+    }
+
+    /* 描画 */
+    private void drawPieces_Click(object sender, EventArgs e) {
+      using (Graphics g = canvas.CreateGraphics()) {
+        Random rng = new Random();
+        foreach (Polygon pol in problem.pieces) {
+          pol.draw(g, randomBrush(rng)); 
+        }
+      }
+    }
+
+    /* 動かした後の描画 */
+    private void drawPiecesMove_Click(object sender, EventArgs e) {
+      using (Graphics g = canvas.CreateGraphics()) {
+        Random rng = new Random();
+        foreach (PieceMove pmv in piecesMove) {
+          pmv.draw(g, randomBrush(rng));
+        }
+      }
+    }
+
+    /* 色をランダムに生成 */
+    private Brush randomBrush(Random rng) {
+      return (new SolidBrush(Color.FromArgb(rng.Next(255), rng.Next(255), rng.Next(255))));
     }
   }
 
@@ -99,6 +124,11 @@ namespace WakuAndPiece {
       this.rad = rad;
       this.piece = piece;
     }
+
+    // 描画
+    public void draw(Graphics g, Brush brush) {
+      piece.rotate(rad).move(X, Y).draw(g, brush);
+    }
   }
 
   // 図形(フレームの穴とピースに使われる)
@@ -124,7 +154,12 @@ namespace WakuAndPiece {
       }
       return (new Polygon(vertices));
     }
-       
+
+    // 図形の描画
+    public void draw(Graphics g, Brush brush) {
+      PointF[] points = this.vertices.Select((x) => x.toPointF()).ToArray();
+      g.FillPolygon(brush, points);
+    }
 
     public void toStream(StreamWriter sw) {
       // 要素数を出力
