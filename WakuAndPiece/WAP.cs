@@ -109,14 +109,37 @@ namespace WakuAndPiece {
       X = x;
       Y = y;
     }
+
+    // PointFに変換
+    public PointF toPointF() {
+      return (new PointF((float)X, (float)Y));
+    }
+
+    // vertex同士の演算用の演算子オーバーロード
+    public static Vertex operator +(Vertex lhs, Vertex rhs) {
+      return new Vertex(lhs.X + rhs.X, lhs.Y + rhs.Y);
+    }
+    public static Vertex operator -(Vertex lhs, Vertex rhs) {
+      return new Vertex(lhs.X - rhs.X, lhs.Y - rhs.Y);
+    }
+
+    // 回転
+    public Vertex rotate(double rad) {
+      double nx = X * Math.Cos(rad) - Y * Math.Sin(rad);
+      double ny = X * Math.Sin(rad) + Y * Math.Cos(rad);
+      return (new Vertex(nx, ny));
+    }
+    public Vertex rotate(Vertex origin, double rad) {
+      return ((this - origin).rotate(rad) + origin);
+    }
   }
 
   // 動かすピース情報
   class PieceMove {
     public Piece piece { get; }
-    public double X { get; }
-    public double Y { get; }
-    public double rad { get; }
+    public double X { get; }   // X方向に動かす分
+    public double Y { get; }   // Y方向に動かす分
+    public double rad { get; } // 回転させる角度
 
     public PieceMove(double x, double y, double rad, Piece piece) {
       X = x;
@@ -168,6 +191,22 @@ namespace WakuAndPiece {
         // 座標を出力
         sw.WriteLine("{0} {1}", vertex.X, vertex.Y);
       }
+    }
+
+    // 回転
+    public Polygon rotate(double rad, int origin_id = 0) {
+      Vertex origin = this.vertices[origin_id];
+      Vertex[] rotated = this.vertices.Select((x) => x.rotate(origin, rad)).ToArray();
+      // 回転後のPolygonを返す
+      return (new Polygon(rotated));
+    }
+
+    // 平行移動
+    public Polygon move(double X, double Y) {
+      Vertex offset = new Vertex(X, Y);
+      Vertex[] moved = this.vertices.Select((x) => x + offset).ToArray();
+      // 移動後のPolygonを返す
+      return (new Polygon(moved));
     }
   }
 
