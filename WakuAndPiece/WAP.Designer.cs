@@ -23,10 +23,25 @@
     /// コード エディターで変更しないでください。
     /// </summary>
     private void InitializeComponent() {
+      this.drawPieces = new System.Windows.Forms.Button();
       this.readFramePiece = new System.Windows.Forms.Button();
       this.outputSolve = new System.Windows.Forms.Button();
       this.answerfromSolver = new System.Windows.Forms.Button();
+      this.canvas = new System.Windows.Forms.PictureBox();
+      this.drawPiecesMove = new System.Windows.Forms.Button();
+      ((System.ComponentModel.ISupportInitialize)(this.canvas)).BeginInit();
       this.SuspendLayout();
+      // 
+      // drawPieces
+      // 
+      this.drawPieces.Enabled = false;
+      this.drawPieces.Location = new System.Drawing.Point(36, 211);
+      this.drawPieces.Name = "drawPieces";
+      this.drawPieces.Size = new System.Drawing.Size(110, 33);
+      this.drawPieces.TabIndex = 3;
+      this.drawPieces.Text = "描画";
+      this.drawPieces.UseVisualStyleBackColor = true;
+      this.drawPieces.Click += new System.EventHandler(this.drawPieces_Click);
       // 
       // readFramePiece
       // 
@@ -40,6 +55,7 @@
       // 
       // outputSolve
       // 
+      this.outputSolve.Enabled = false;
       this.outputSolve.Location = new System.Drawing.Point(36, 104);
       this.outputSolve.Name = "outputSolve";
       this.outputSolve.Size = new System.Drawing.Size(110, 33);
@@ -50,6 +66,7 @@
       // 
       // answerfromSolver
       // 
+      this.answerfromSolver.Enabled = false;
       this.answerfromSolver.Location = new System.Drawing.Point(36, 156);
       this.answerfromSolver.Name = "answerfromSolver";
       this.answerfromSolver.Size = new System.Drawing.Size(110, 33);
@@ -58,11 +75,33 @@
       this.answerfromSolver.UseVisualStyleBackColor = true;
       this.answerfromSolver.Click += new System.EventHandler(this.answerfromSolver_Click);
       // 
+      // canvas
+      // 
+      this.canvas.Location = new System.Drawing.Point(252, 52);
+      this.canvas.Name = "canvas";
+      this.canvas.Size = new System.Drawing.Size(910, 514);
+      this.canvas.TabIndex = 4;
+      this.canvas.TabStop = false;
+      // 
+      // drawPiecesMove
+      // 
+      this.drawPiecesMove.Enabled = false;
+      this.drawPiecesMove.Location = new System.Drawing.Point(36, 261);
+      this.drawPiecesMove.Name = "drawPiecesMove";
+      this.drawPiecesMove.Size = new System.Drawing.Size(110, 34);
+      this.drawPiecesMove.TabIndex = 5;
+      this.drawPiecesMove.Text = "Move後描画";
+      this.drawPiecesMove.UseVisualStyleBackColor = true;
+      this.drawPiecesMove.Click += new System.EventHandler(this.drawPiecesMove_Click);
+      // 
       // WakuAndPiece
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.ClientSize = new System.Drawing.Size(1188, 596);
+      this.ClientSize = new System.Drawing.Size(1249, 648);
+      this.Controls.Add(this.drawPiecesMove);
+      this.Controls.Add(this.canvas);
+      this.Controls.Add(this.drawPieces);
       this.Controls.Add(this.answerfromSolver);
       this.Controls.Add(this.outputSolve);
       this.Controls.Add(this.readFramePiece);
@@ -70,6 +109,7 @@
       this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
       this.Name = "WakuAndPiece";
       this.Text = "WAP";
+      ((System.ComponentModel.ISupportInitialize)(this.canvas)).EndInit();
       this.ResumeLayout(false);
 
     }
@@ -79,6 +119,9 @@
     private System.Windows.Forms.Button readFramePiece;
     private System.Windows.Forms.Button outputSolve;
     private System.Windows.Forms.Button answerfromSolver;
+    private System.Windows.Forms.PictureBox canvas;
+    private System.Windows.Forms.Button drawPiecesMove;
+    private System.Windows.Forms.Button drawPieces;
   }
 }
 

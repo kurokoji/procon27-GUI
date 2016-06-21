@@ -17,10 +17,56 @@ namespace WakuAndPiece {
   public partial class WakuAndPiece : Form {
     public WakuAndPiece() {
       InitializeComponent();
+      this.state = new FormState();
+
+      // 変更があったら有効にする
+      this.state.piecesMoveChanged += (x) => {
+        this.drawPiecesMove.Enabled = x != null;
+      };
+      this.state.problemChanged += (x) => {
+        this.drawPieces.Enabled = x != null;
+        this.outputSolve.Enabled = x != null;
+      };
     }
 
-    Problem problem;
-    PieceMove[] piecesMove;
+    // 状態(変更があったか)を表すクラス
+    class FormState {
+      public delegate void PieceMoveDelegate(PieceMove[] piecesMove);
+      public delegate void ProblemDelegate(Problem problem);
+
+      private PieceMove[] piecesMove_;
+      private Problem problem_;
+
+      public PieceMoveDelegate piecesMoveChanged;
+      public ProblemDelegate problemChanged;
+
+      public PieceMove[] piecesMove {
+        get { return this.piecesMove_; }
+        set {
+          this.piecesMove_ = value;
+          piecesMoveChanged(this.piecesMove_);
+        }
+      }
+      public Problem problem {
+        get { return this.problem_; }
+        set {
+          this.problem_ = value;
+          problemChanged(this.problem_);
+        }
+      }
+    };
+
+    FormState state;
+
+    Problem problem {
+      get { return state.problem; }
+      set { state.problem = value; }
+    }
+    PieceMove[] piecesMove {
+      get { return state.piecesMove; }
+      set { state.piecesMove = value; }
+    }
+
 
     /* フレーム,ピース情報の読み込み */
     private void readFramePiece_Click(object sender, EventArgs e) {
