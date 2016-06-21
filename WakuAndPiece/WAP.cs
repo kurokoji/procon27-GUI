@@ -70,54 +70,43 @@ namespace WakuAndPiece {
 
     /* フレーム,ピース情報の読み込み */
     private void readFramePiece_Click(object sender, EventArgs e) {
-      /*
-      Process readQuestprocess = new Process();
-      readQuestprocess.StartInfo.FileName = "";
-      readQuestprocess.StartInfo.UseShellExecute = false;
-      readQuestprocess.StartInfo.RedirectStandardOutput = true;
+
+      ProcessStartInfo readQuestInfo = new ProcessStartInfo("scaller.exe");
+      readQuestInfo.UseShellExecute = false;
+      readQuestInfo.RedirectStandardOutput = true;
+
       // 読み込みプロセスの開始
-      readQuestprocess.Start();
-      */
-
-      /* 今はテキストから読み込んでるだけ 5/22 */
-
-      // フレーム,ピース情報を読み込む
-      using (StreamReader questReader = new StreamReader("quest.txt")) { //readFrameprocess.StandardOutput;
-        problem = Problem.fromStream(questReader);
+      using (Process readQuestreader = Process.Start(readQuestInfo)) {
+        /* 今はテキストから読み込んでるだけ 5/22 */
+        // フレーム,ピース情報を読み込む
+        using (StreamReader questReader = readQuestreader.StandardOutput/*new StreamReader("quest.txt")*/) { //readFrameprocess.StandardOutput;
+          problem = Problem.fromStream(questReader);
+        }
       }
     }
 
     /* ソルバーにフレーム,ピース情報を出力 */
     private void outputSolve_Click(object sender, EventArgs e) {
-      /*
-      Process writeprocess = new Process();
-      writeprocess.StartInfo.FileName = "";
-      writeprocess.StartInfo.UseShellExecute = false;
-      writeprocess.StartInfo.RedirectStandardInput = true;
-      writeprocess.Start();
-      */
 
-      /* 今はテキストに書き込んでるだけ */
+      ProcessStartInfo processInfo = new ProcessStartInfo("solver.exe");
+      processInfo.UseShellExecute = false;
+      processInfo.RedirectStandardInput = true;
+      processInfo.RedirectStandardOutput = true;
 
-      // フレーム,ピース情報を書き込む
-      using (StreamWriter picInfoWriter = new StreamWriter("toPic.txt")) { // writeprocess.StandardOutput
-        problem.toStream(picInfoWriter);
-      } 
+      using (Process processSolver = Process.Start(processInfo)) {
+        /* 今はテキストに書き込んでるだけ */
+        // フレーム,ピース情報を書き込む
+        using (StreamWriter picInfoWriter = processSolver.StandardInput) { // new StreamWriter("toPic.txt") 
+          problem.toStream(picInfoWriter);
+          using (StreamReader answerReader = processSolver.StandardOutput) { //new StreamReader("answer.txt")
+            piecesMove = problem.readAnswerStream(answerReader);
+          }
+        }
+      }
     }
 
     /* 答えをSolverから受け取る */
     private void answerfromSolver_Click(object sender, EventArgs e) {
-      /*
-      Process readprocess = new Process();
-      readprocess.StartInfo.FileName = "";
-      readprocess.StartInfo.UseShellExecute = false;
-      readprocess.StartInfo.RedirectStandardOutput = true;
-      readprocess.Start();
-      */
-
-      using (StreamReader answerReader = new StreamReader("answer.txt")) {
-        piecesMove = problem.readAnswerStream(answerReader);
-      }
     }
 
     /* 描画 */
