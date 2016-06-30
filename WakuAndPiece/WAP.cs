@@ -71,16 +71,15 @@ namespace WakuAndPiece {
 
     /* フレーム,ピース情報の読み込み */
     private void readFramePiece_Click(object sender, EventArgs e) {
-
       ProcessStartInfo readQuestInfo = new ProcessStartInfo("scaller.exe");
       readQuestInfo.UseShellExecute = false;
       readQuestInfo.RedirectStandardOutput = true;
-
+ 
       // 読み込みプロセスの開始
       using (Process readQuestreader = Process.Start(readQuestInfo)) {
         /* 今はテキストから読み込んでるだけ 5/22 */
         // フレーム,ピース情報を読み込む
-        using (StreamReader questReader = readQuestreader.StandardOutput/*new StreamReader("quest.txt")*/) { //readFrameprocess.StandardOutput;
+        using (StreamReader questReader = readQuestreader.StandardOutput) { //new StreamReader("quest.txt")
           problem = Problem.fromStream(questReader);
         }
       }
@@ -112,19 +111,21 @@ namespace WakuAndPiece {
 
     /* 描画 */
     private void drawPieces_Click(object sender, EventArgs e) {
-      using (Graphics g = canvas.CreateGraphics()) {
+      canvas.Image = new Bitmap(canvas.Height, canvas.Width);
+      using (Graphics g = Graphics.FromImage(canvas.Image)) {
         // アンチエイリアス
         g.SmoothingMode = SmoothingMode.AntiAlias;
         Random rng = new Random();
         foreach (Polygon pol in problem.pieces) {
-          pol.draw(g, randomBrush(rng)); 
+          pol.draw(g, randomBrush(rng));
         }
       }
     }
 
     /* 動かした後の描画 */
     private void drawPiecesMove_Click(object sender, EventArgs e) {
-      using (Graphics g = canvas.CreateGraphics()) {
+      canvas.Image = new Bitmap(canvas.Height, canvas.Width);
+      using (Graphics g = Graphics.FromImage(canvas.Image)) {
         // アンチエイリアス
         g.SmoothingMode = SmoothingMode.AntiAlias;
         Random rng = new Random();
