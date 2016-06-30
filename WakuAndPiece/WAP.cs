@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -105,13 +106,15 @@ namespace WakuAndPiece {
       }
     }
 
-    /* 答えをSolverから受け取る */
+    /* */
     private void answerfromSolver_Click(object sender, EventArgs e) {
     }
 
     /* 描画 */
     private void drawPieces_Click(object sender, EventArgs e) {
       using (Graphics g = canvas.CreateGraphics()) {
+        // アンチエイリアス
+        g.SmoothingMode = SmoothingMode.AntiAlias;
         Random rng = new Random();
         foreach (Polygon pol in problem.pieces) {
           pol.draw(g, randomBrush(rng)); 
@@ -122,6 +125,8 @@ namespace WakuAndPiece {
     /* 動かした後の描画 */
     private void drawPiecesMove_Click(object sender, EventArgs e) {
       using (Graphics g = canvas.CreateGraphics()) {
+        // アンチエイリアス
+        g.SmoothingMode = SmoothingMode.AntiAlias;
         Random rng = new Random();
         foreach (PieceMove pmv in piecesMove) {
           pmv.draw(g, randomBrush(rng));
