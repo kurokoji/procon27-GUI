@@ -29,6 +29,7 @@
       this.answerfromSolver = new System.Windows.Forms.Button();
       this.canvas = new System.Windows.Forms.PictureBox();
       this.drawPiecesMove = new System.Windows.Forms.Button();
+      this.labelpanel = new System.Windows.Forms.Panel();
       ((System.ComponentModel.ISupportInitialize)(this.canvas)).BeginInit();
       this.SuspendLayout();
       // 
@@ -77,6 +78,7 @@
       // 
       // canvas
       // 
+      this.canvas.BackColor = System.Drawing.Color.Transparent;
       this.canvas.Location = new System.Drawing.Point(252, 52);
       this.canvas.Name = "canvas";
       this.canvas.Size = new System.Drawing.Size(910, 514);
@@ -94,11 +96,21 @@
       this.drawPiecesMove.UseVisualStyleBackColor = true;
       this.drawPiecesMove.Click += new System.EventHandler(this.drawPiecesMove_Click);
       // 
+      // labelpanel
+      // 
+      this.labelpanel.BackColor = System.Drawing.Color.Transparent;
+      this.labelpanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+      this.labelpanel.Location = new System.Drawing.Point(252, 52);
+      this.labelpanel.Name = "labelpanel";
+      this.labelpanel.Size = new System.Drawing.Size(910, 514);
+      this.labelpanel.TabIndex = 6;
+      // 
       // WakuAndPiece
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.ClientSize = new System.Drawing.Size(1249, 648);
+      this.Controls.Add(this.labelpanel);
       this.Controls.Add(this.drawPiecesMove);
       this.Controls.Add(this.canvas);
       this.Controls.Add(this.drawPieces);
@@ -109,6 +121,7 @@
       this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
       this.Name = "WakuAndPiece";
       this.Text = "WAP";
+      this.Load += new System.EventHandler(this.WakuAndPiece_Load);
       ((System.ComponentModel.ISupportInitialize)(this.canvas)).EndInit();
       this.ResumeLayout(false);
 
@@ -122,6 +135,7 @@
     private System.Windows.Forms.PictureBox canvas;
     private System.Windows.Forms.Button drawPiecesMove;
     private System.Windows.Forms.Button drawPieces;
+    private System.Windows.Forms.Panel labelpanel;
   }
 }
 

@@ -19,7 +19,6 @@ namespace WakuAndPiece {
     public WakuAndPiece() {
       InitializeComponent();
       this.state = new FormState();
-
       // 変更があったら有効にする
       this.state.piecesMoveChanged += (x) => {
         this.drawPiecesMove.Enabled = x != null;
@@ -29,7 +28,7 @@ namespace WakuAndPiece {
         this.outputSolve.Enabled = x != null;
       };
     }
-
+    
     // 状態(変更があったか)を表すクラス
     class FormState {
       public delegate void PieceMoveDelegate(PieceMove[] piecesMove);
@@ -68,13 +67,12 @@ namespace WakuAndPiece {
       set { state.piecesMove = value; }
     }
 
-
     /* フレーム,ピース情報の読み込み */
     private void readFramePiece_Click(object sender, EventArgs e) {
       ProcessStartInfo readQuestInfo = new ProcessStartInfo("scaller.exe");
       readQuestInfo.UseShellExecute = false;
       readQuestInfo.RedirectStandardOutput = true;
- 
+
       // 読み込みプロセスの開始
       using (Process readQuestreader = Process.Start(readQuestInfo)) {
         /* 今はテキストから読み込んでるだけ 5/22 */
@@ -84,7 +82,7 @@ namespace WakuAndPiece {
         }
       }
     }
-
+    
     /* ソルバーにフレーム,ピース情報を出力 */
     private void outputSolve_Click(object sender, EventArgs e) {
 
@@ -117,8 +115,8 @@ namespace WakuAndPiece {
         g.SmoothingMode = SmoothingMode.AntiAlias;
         Random rng = new Random();
         foreach (Polygon pol in problem.pieces) {
-          pol.draw(g, randomBrush(rng));
-        }
+          pol.draw(g, randomBrush(rng), canvas);
+        }      
       }
     }
 
@@ -129,15 +127,22 @@ namespace WakuAndPiece {
         // アンチエイリアス
         g.SmoothingMode = SmoothingMode.AntiAlias;
         Random rng = new Random();
+        // 子コントロールをclear
+        canvas.Controls.Clear();
         foreach (PieceMove pmv in piecesMove) {
-          pmv.draw(g, randomBrush(rng));
+          pmv.draw(g, randomBrush(rng), canvas);
         }
       }
     }
-
     /* 色をランダムに生成 */
     private Brush randomBrush(Random rng) {
       return (new SolidBrush(Color.FromArgb(rng.Next(255), rng.Next(255), rng.Next(255))));
+    }
+
+    /* WakuAndPieceが読まれた際の処理(1度だけ) */
+    private void WakuAndPiece_Load(object sender, EventArgs e) {
+      this.labelpanel.Controls.Add(canvas);
+      this.canvas.Location = new Point(0, 0);
     }
   }
 
@@ -155,6 +160,10 @@ namespace WakuAndPiece {
     public PointF toPointF() {
       return (new PointF((float)X, (float)Y));
     }
+    // Pointに変換
+    public Point toPoint() {
+      return new Point((int)X, (int)Y);
+    }
 
     // vertex同士の演算用の演算子オーバーロード
     public static Vertex operator +(Vertex lhs, Vertex rhs) {
@@ -162,6 +171,10 @@ namespace WakuAndPiece {
     }
     public static Vertex operator -(Vertex lhs, Vertex rhs) {
       return new Vertex(lhs.X - rhs.X, lhs.Y - rhs.Y);
+    }
+    // vertexとdoubleの演算用の演算子オーバーロード
+    public static Vertex operator /(Vertex lhs, double rhs) {
+      return new Vertex(lhs.X / rhs, lhs.Y / rhs);
     }
 
     // 回転
@@ -190,17 +203,29 @@ namespace WakuAndPiece {
     }
 
     // 描画
-    public void draw(Graphics g, Brush brush) {
-      piece.rotate(rad).move(X, Y).draw(g, brush);
+    public void draw(Graphics g, Brush brush, PictureBox canvas) {
+      piece.rotate(rad).move(X, Y).draw(g, brush, canvas);
     }
   }
 
   // 図形(フレームの穴とピースに使われる)
   class Polygon {
+    // 重心の取得
+    public Vertex getGravity() {
+      return vertices.Aggregate((acc, x) => acc + x) / vertices.Length;
+    }
+
     public Vertex[] vertices { get; }
+    public int ID { get; set; }
+
     // Vertexクラスをセットするコンストラクタ
     public Polygon(Vertex[] vertices) {
       this.vertices = vertices;
+    }
+
+    public Polygon(Vertex[] vertices, int ID) {
+      this.vertices = vertices;
+      this.ID = ID;
     }
 
     // StreamReaderから読み込む
@@ -220,11 +245,19 @@ namespace WakuAndPiece {
     }
 
     // 図形の描画
-    public void draw(Graphics g, Brush brush) {
+    public void draw(Graphics g, Brush brush, PictureBox canvas) {
       PointF[] points = this.vertices.Select((x) => x.toPointF()).ToArray();
       g.FillPolygon(brush, points);
-    }
 
+      // IDを表示するためのTextbox
+      TextBox IDTextbox = new TextBox();
+      IDTextbox.Location = getGravity().toPoint();
+      IDTextbox.Text = ID.ToString();
+      IDTextbox.Size = new Size(25, 10);
+      // canvasの子コントロールに追加(これで表示される)
+      canvas.Controls.Add(IDTextbox);
+    }
+    
     public void toStream(StreamWriter sw) {
       // 要素数を出力
       sw.WriteLine(vertices.Length);
@@ -239,7 +272,7 @@ namespace WakuAndPiece {
       Vertex origin = this.vertices[origin_id];
       Vertex[] rotated = this.vertices.Select((x) => x.rotate(origin, rad)).ToArray();
       // 回転後のPolygonを返す
-      return (new Polygon(rotated));
+      return (new Polygon(rotated, this.ID));
     }
 
     // 平行移動
@@ -247,7 +280,7 @@ namespace WakuAndPiece {
       Vertex offset = new Vertex(X, Y);
       Vertex[] moved = this.vertices.Select((x) => x + offset).ToArray();
       // 移動後のPolygonを返す
-      return (new Polygon(moved));
+      return (new Polygon(moved, this.ID));
     }
   }
 
@@ -300,6 +333,7 @@ namespace WakuAndPiece {
       Piece[] pieces = new Piece[N];
       for (int i = 0; i < N; i++) {
         pieces[i] = Piece.fromStream(sr);
+        pieces[i].ID = i;
       }
       return (new Problem(frame, pieces));
     }
@@ -324,6 +358,7 @@ namespace WakuAndPiece {
         double x = double.Parse(tokens[1]);
         double y = double.Parse(tokens[2]);
         double rad = double.Parse(tokens[3]);
+
         piecesMove[i] = new PieceMove(x, y, rad, pieces[id]);
       }
       return (piecesMove);
