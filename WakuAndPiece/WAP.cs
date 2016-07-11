@@ -114,6 +114,8 @@ namespace WakuAndPiece {
         // アンチエイリアス
         g.SmoothingMode = SmoothingMode.AntiAlias;
         Random rng = new Random();
+        // 子コントロールをclear
+        canvas.Controls.Clear();
         foreach (Polygon pol in problem.pieces) {
           pol.draw(g, randomBrush(rng), canvas);
         }      
