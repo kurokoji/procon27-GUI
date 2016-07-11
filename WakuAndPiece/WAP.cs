@@ -138,7 +138,7 @@ namespace WakuAndPiece {
     }
     /* 色をランダムに生成 */
     private Brush randomBrush(Random rng) {
-      return (new SolidBrush(Color.FromArgb(rng.Next(255), rng.Next(255), rng.Next(255))));
+      return new SolidBrush(Color.FromArgb(rng.Next(255), rng.Next(255), rng.Next(255)));
     }
 
     /* WakuAndPieceが読まれた際の処理(1度だけ) */
@@ -160,7 +160,7 @@ namespace WakuAndPiece {
 
     // PointFに変換
     public PointF toPointF() {
-      return (new PointF((float)X, (float)Y));
+      return new PointF((float)X, (float)Y);
     }
     // Pointに変換
     public Point toPoint() {
@@ -183,10 +183,10 @@ namespace WakuAndPiece {
     public Vertex rotate(double rad) {
       double nx = X * Math.Cos(rad) - Y * Math.Sin(rad);
       double ny = X * Math.Sin(rad) + Y * Math.Cos(rad);
-      return (new Vertex(nx, ny));
+      return new Vertex(nx, ny);
     }
     public Vertex rotate(Vertex origin, double rad) {
-      return ((this - origin).rotate(rad) + origin);
+      return (this - origin).rotate(rad) + origin;
     }
   }
 
@@ -243,7 +243,7 @@ namespace WakuAndPiece {
         double y = double.Parse(tokens[1]);
         vertices[i] = new Vertex(x, y);
       }
-      return (new Polygon(vertices));
+      return new Polygon(vertices);
     }
 
     // 図形の描画
@@ -274,7 +274,7 @@ namespace WakuAndPiece {
       Vertex origin = this.vertices[origin_id];
       Vertex[] rotated = this.vertices.Select((x) => x.rotate(origin, rad)).ToArray();
       // 回転後のPolygonを返す
-      return (new Polygon(rotated, this.ID));
+      return new Polygon(rotated, this.ID);
     }
 
     // 平行移動
@@ -282,7 +282,7 @@ namespace WakuAndPiece {
       Vertex offset = new Vertex(X, Y);
       Vertex[] moved = this.vertices.Select((x) => x + offset).ToArray();
       // 移動後のPolygonを返す
-      return (new Polygon(moved, this.ID));
+      return new Polygon(moved, this.ID);
     }
   }
 
@@ -304,7 +304,7 @@ namespace WakuAndPiece {
         // StreamReaderを渡し,HoleのfromStream内で座標を読み込む
         holes[i] = Hole.fromStream(sr);
       }
-      return (new Frame(holes));
+      return new Frame(holes);
     }
 
     // Streamに出力
@@ -337,7 +337,7 @@ namespace WakuAndPiece {
         pieces[i] = Piece.fromStream(sr);
         pieces[i].ID = i;
       }
-      return (new Problem(frame, pieces));
+      return new Problem(frame, pieces);
     }
 
     // Streamに出力
@@ -363,7 +363,7 @@ namespace WakuAndPiece {
 
         piecesMove[i] = new PieceMove(x, y, rad, pieces[id]);
       }
-      return (piecesMove);
+      return piecesMove;
     }
   }
 }
