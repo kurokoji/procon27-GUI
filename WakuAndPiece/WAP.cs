@@ -75,7 +75,6 @@ namespace WakuAndPiece {
 
       // 読み込みプロセスの開始
       using (Process readQuestreader = Process.Start(readQuestInfo)) {
-        /* 今はテキストから読み込んでるだけ 5/22 */
         // フレーム,ピース情報を読み込む
         problem = Problem.fromStream(readQuestreader.StandardOutput);
       }
@@ -90,16 +89,11 @@ namespace WakuAndPiece {
       processInfo.RedirectStandardOutput = true;
 
       using (Process processSolver = Process.Start(processInfo)) {
-        /* 今はテキストに書き込んでるだけ */
         // フレーム,ピース情報を書き込む
         problem.toStream(processSolver.StandardInput);
         processSolver.StandardInput.Flush();
         piecesMove = problem.readAnswerStream(processSolver.StandardOutput);
       }
-    }
-
-    /* */
-    private void answerfromSolver_Click(object sender, EventArgs e) {
     }
 
     /* 描画 */
