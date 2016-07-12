@@ -77,9 +77,7 @@ namespace WakuAndPiece {
       using (Process readQuestreader = Process.Start(readQuestInfo)) {
         /* 今はテキストから読み込んでるだけ 5/22 */
         // フレーム,ピース情報を読み込む
-        using (StreamReader questReader = readQuestreader.StandardOutput) { //new StreamReader("quest.txt")
-          problem = Problem.fromStream(questReader);
-        }
+        problem = Problem.fromStream(readQuestreader.StandardOutput);
       }
     }
     
@@ -94,12 +92,9 @@ namespace WakuAndPiece {
       using (Process processSolver = Process.Start(processInfo)) {
         /* 今はテキストに書き込んでるだけ */
         // フレーム,ピース情報を書き込む
-        using (StreamWriter picInfoWriter = processSolver.StandardInput) { // new StreamWriter("toPic.txt") 
-          problem.toStream(picInfoWriter);
-          using (StreamReader answerReader = processSolver.StandardOutput) { //new StreamReader("answer.txt")
-            piecesMove = problem.readAnswerStream(answerReader);
-          }
-        }
+        problem.toStream(processSolver.StandardInput);
+        processSolver.StandardInput.Flush();
+        piecesMove = problem.readAnswerStream(processSolver.StandardOutput);
       }
     }
 
@@ -143,7 +138,7 @@ namespace WakuAndPiece {
 
     /* WakuAndPieceが読まれた際の処理(1度だけ) */
     private void WakuAndPiece_Load(object sender, EventArgs e) {
-      this.labelpanel.Controls.Add(canvas);
+      this.textboxpanel.Controls.Add(canvas);
       this.canvas.Location = new Point(0, 0);
     }
   }
@@ -246,6 +241,8 @@ namespace WakuAndPiece {
       return new Polygon(vertices);
     }
 
+    const int ID_WIDTH = 25;
+    const int ID_HEIGHT = 10;
     // 図形の描画
     public void draw(Graphics g, Brush brush, PictureBox canvas) {
       PointF[] points = this.vertices.Select((x) => x.toPointF()).ToArray();
@@ -255,7 +252,7 @@ namespace WakuAndPiece {
       TextBox IDTextbox = new TextBox();
       IDTextbox.Location = getGravity().toPoint();
       IDTextbox.Text = ID.ToString();
-      IDTextbox.Size = new Size(25, 10);
+      IDTextbox.Size = new Size(ID_WIDTH, ID_HEIGHT);
       // canvasの子コントロールに追加(これで表示される)
       canvas.Controls.Add(IDTextbox);
     }
