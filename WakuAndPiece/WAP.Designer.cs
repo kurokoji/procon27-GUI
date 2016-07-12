@@ -26,17 +26,16 @@
       this.drawPieces = new System.Windows.Forms.Button();
       this.readFramePiece = new System.Windows.Forms.Button();
       this.outputSolve = new System.Windows.Forms.Button();
-      this.answerfromSolver = new System.Windows.Forms.Button();
       this.canvas = new System.Windows.Forms.PictureBox();
       this.drawPiecesMove = new System.Windows.Forms.Button();
-      this.labelpanel = new System.Windows.Forms.Panel();
+      this.textboxpanel = new System.Windows.Forms.Panel();
       ((System.ComponentModel.ISupportInitialize)(this.canvas)).BeginInit();
       this.SuspendLayout();
       // 
       // drawPieces
       // 
       this.drawPieces.Enabled = false;
-      this.drawPieces.Location = new System.Drawing.Point(36, 211);
+      this.drawPieces.Location = new System.Drawing.Point(36, 164);
       this.drawPieces.Name = "drawPieces";
       this.drawPieces.Size = new System.Drawing.Size(110, 33);
       this.drawPieces.TabIndex = 3;
@@ -57,24 +56,13 @@
       // outputSolve
       // 
       this.outputSolve.Enabled = false;
-      this.outputSolve.Location = new System.Drawing.Point(36, 104);
+      this.outputSolve.Location = new System.Drawing.Point(36, 108);
       this.outputSolve.Name = "outputSolve";
       this.outputSolve.Size = new System.Drawing.Size(110, 33);
       this.outputSolve.TabIndex = 1;
       this.outputSolve.Text = "Solverに渡す";
       this.outputSolve.UseVisualStyleBackColor = true;
       this.outputSolve.Click += new System.EventHandler(this.outputSolve_Click);
-      // 
-      // answerfromSolver
-      // 
-      this.answerfromSolver.Enabled = false;
-      this.answerfromSolver.Location = new System.Drawing.Point(36, 156);
-      this.answerfromSolver.Name = "answerfromSolver";
-      this.answerfromSolver.Size = new System.Drawing.Size(110, 33);
-      this.answerfromSolver.TabIndex = 2;
-      this.answerfromSolver.Text = "answer";
-      this.answerfromSolver.UseVisualStyleBackColor = true;
-      this.answerfromSolver.Click += new System.EventHandler(this.answerfromSolver_Click);
       // 
       // canvas
       // 
@@ -88,7 +76,7 @@
       // drawPiecesMove
       // 
       this.drawPiecesMove.Enabled = false;
-      this.drawPiecesMove.Location = new System.Drawing.Point(36, 261);
+      this.drawPiecesMove.Location = new System.Drawing.Point(36, 220);
       this.drawPiecesMove.Name = "drawPiecesMove";
       this.drawPiecesMove.Size = new System.Drawing.Size(110, 34);
       this.drawPiecesMove.TabIndex = 5;
@@ -96,25 +84,24 @@
       this.drawPiecesMove.UseVisualStyleBackColor = true;
       this.drawPiecesMove.Click += new System.EventHandler(this.drawPiecesMove_Click);
       // 
-      // labelpanel
+      // textboxpanel
       // 
-      this.labelpanel.BackColor = System.Drawing.Color.Transparent;
-      this.labelpanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-      this.labelpanel.Location = new System.Drawing.Point(252, 52);
-      this.labelpanel.Name = "labelpanel";
-      this.labelpanel.Size = new System.Drawing.Size(910, 514);
-      this.labelpanel.TabIndex = 6;
+      this.textboxpanel.BackColor = System.Drawing.Color.Transparent;
+      this.textboxpanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+      this.textboxpanel.Location = new System.Drawing.Point(252, 52);
+      this.textboxpanel.Name = "textboxpanel";
+      this.textboxpanel.Size = new System.Drawing.Size(910, 514);
+      this.textboxpanel.TabIndex = 6;
       // 
       // WakuAndPiece
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.ClientSize = new System.Drawing.Size(1249, 648);
-      this.Controls.Add(this.labelpanel);
+      this.Controls.Add(this.textboxpanel);
       this.Controls.Add(this.drawPiecesMove);
       this.Controls.Add(this.canvas);
       this.Controls.Add(this.drawPieces);
-      this.Controls.Add(this.answerfromSolver);
       this.Controls.Add(this.outputSolve);
       this.Controls.Add(this.readFramePiece);
       this.Font = new System.Drawing.Font("Meiryo UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
@@ -131,11 +118,10 @@
 
     private System.Windows.Forms.Button readFramePiece;
     private System.Windows.Forms.Button outputSolve;
-    private System.Windows.Forms.Button answerfromSolver;
     private System.Windows.Forms.PictureBox canvas;
     private System.Windows.Forms.Button drawPiecesMove;
     private System.Windows.Forms.Button drawPieces;
-    private System.Windows.Forms.Panel labelpanel;
+    private System.Windows.Forms.Panel textboxpanel;
   }
 }
 
