@@ -197,6 +197,11 @@ namespace WakuAndPiece {
     public void draw(Graphics g, Brush brush, PictureBox canvas) {
       piece.rotate(rad).move(X, Y).draw(g, brush, canvas);
     }
+
+    // 解答の出力
+    public void toStream(StreamWriter sw) {
+      sw.WriteLine("{0} {1} {2} {3}", piece.ID, X, Y, rad);
+    }
   }
 
   // 図形(フレームの穴とピースに使われる)
