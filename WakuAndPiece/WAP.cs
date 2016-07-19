@@ -22,6 +22,7 @@ namespace WakuAndPiece {
       // 変更があったら有効にする
       this.state.piecesMoveChanged += (x) => {
         this.drawPiecesMove.Enabled = x != null;
+        this.SaveAns.Enabled = x != null;
       };
       this.state.problemChanged += (x) => {
         this.drawPieces.Enabled = x != null;
