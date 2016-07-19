@@ -156,6 +156,33 @@ namespace WakuAndPiece {
       }
     }
 
+    /* 過去の問題と解答の読み込み */
+    private void oldProAns_Click(object sender, EventArgs e) {
+      // 「ファイルを開く」ダイアログ
+      OpenFileDialog proofd = new OpenFileDialog();
+      OpenFileDialog ansofd = new OpenFileDialog();
+
+      proofd.Filter = "kudoファイル(*.kudo)|*.kudo|すべてのファイル(*.*)|*.*";
+      proofd.Title = "開くファイルを選択してください";
+      proofd.RestoreDirectory = true;
+
+      ansofd.Filter = "shinobuファイル(*.shinobu)|*.shinobu|すべてのファイル(*.*)|*.*";
+      ansofd.Title = "開くファイルを選択してください";
+      ansofd.RestoreDirectory = true;
+
+      if (proofd.ShowDialog() == DialogResult.OK) {
+        if (ansofd.ShowDialog() == DialogResult.OK) {
+          // 問題
+          using (StreamReader sr = new StreamReader(proofd.OpenFile())) {
+            problem = Problem.fromStream(sr);
+          }
+          // 解答
+          using (StreamReader sr = new StreamReader(ansofd.OpenFile())) {
+            piecesMove = problem.readAnswerStream(sr);
+          }
+        }
+      }
+    }
   }
 
   // 座標
