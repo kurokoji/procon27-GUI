@@ -135,6 +135,27 @@ namespace WakuAndPiece {
       this.textboxpanel.Controls.Add(canvas);
       this.canvas.Location = new Point(0, 0);
     }
+
+    /* 解答の保存をする際のボタン */
+    private void SaveAns_Click(object sender, EventArgs e) {
+      // 日付の取得
+      DateTime nowDate = DateTime.Now;
+      
+      // 保存するファイルの名前
+      string Name = nowDate.ToString("yyyy_MM_dd_HH_mm_ss");
+      // 問題
+      using (StreamWriter sw = new StreamWriter("Problem_" + Name + ".kudo")) {
+        problem.toStream(sw);
+      }
+      // 解答
+      using (StreamWriter sw = new StreamWriter("Answer_" + Name + ".shinobu")) {
+        sw.WriteLine(piecesMove.Length);
+        foreach (PieceMove pm in piecesMove) {
+          pm.toStream(sw);
+        }
+      }
+    }
+
   }
 
   // 座標
