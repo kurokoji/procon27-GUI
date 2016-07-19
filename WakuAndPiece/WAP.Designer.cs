@@ -29,6 +29,8 @@
       this.canvas = new System.Windows.Forms.PictureBox();
       this.drawPiecesMove = new System.Windows.Forms.Button();
       this.textboxpanel = new System.Windows.Forms.Panel();
+      this.SaveAns = new System.Windows.Forms.Button();
+      this.oldProAns = new System.Windows.Forms.Button();
       ((System.ComponentModel.ISupportInitialize)(this.canvas)).BeginInit();
       this.SuspendLayout();
       // 
@@ -93,11 +95,34 @@
       this.textboxpanel.Size = new System.Drawing.Size(910, 514);
       this.textboxpanel.TabIndex = 6;
       // 
+      // SaveAns
+      // 
+      this.SaveAns.Enabled = false;
+      this.SaveAns.Location = new System.Drawing.Point(36, 272);
+      this.SaveAns.Name = "SaveAns";
+      this.SaveAns.Size = new System.Drawing.Size(110, 33);
+      this.SaveAns.TabIndex = 7;
+      this.SaveAns.Text = "保存";
+      this.SaveAns.UseVisualStyleBackColor = true;
+      this.SaveAns.Click += new System.EventHandler(this.SaveAns_Click);
+      // 
+      // oldProAns
+      // 
+      this.oldProAns.Location = new System.Drawing.Point(36, 321);
+      this.oldProAns.Name = "oldProAns";
+      this.oldProAns.Size = new System.Drawing.Size(110, 33);
+      this.oldProAns.TabIndex = 8;
+      this.oldProAns.Text = "過去の問題と解答";
+      this.oldProAns.UseVisualStyleBackColor = true;
+      this.oldProAns.Click += new System.EventHandler(this.oldProAns_Click);
+      // 
       // WakuAndPiece
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.ClientSize = new System.Drawing.Size(1249, 648);
+      this.Controls.Add(this.oldProAns);
+      this.Controls.Add(this.SaveAns);
       this.Controls.Add(this.textboxpanel);
       this.Controls.Add(this.drawPiecesMove);
       this.Controls.Add(this.canvas);
@@ -122,6 +147,8 @@
     private System.Windows.Forms.Button drawPiecesMove;
     private System.Windows.Forms.Button drawPieces;
     private System.Windows.Forms.Panel textboxpanel;
+    private System.Windows.Forms.Button SaveAns;
+    private System.Windows.Forms.Button oldProAns;
   }
 }
 
