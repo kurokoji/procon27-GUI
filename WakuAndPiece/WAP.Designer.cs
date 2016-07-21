@@ -28,8 +28,8 @@
       this.outputSolve = new System.Windows.Forms.Button();
       this.canvas = new System.Windows.Forms.PictureBox();
       this.drawPiecesMove = new System.Windows.Forms.Button();
-      this.textboxpanel = new System.Windows.Forms.Panel();
-      this.SaveAns = new System.Windows.Forms.Button();
+      this.textboxPanel = new System.Windows.Forms.Panel();
+      this.saveAns = new System.Windows.Forms.Button();
       this.oldProAns = new System.Windows.Forms.Button();
       ((System.ComponentModel.ISupportInitialize)(this.canvas)).BeginInit();
       this.SuspendLayout();
@@ -86,25 +86,25 @@
       this.drawPiecesMove.UseVisualStyleBackColor = true;
       this.drawPiecesMove.Click += new System.EventHandler(this.drawPiecesMove_Click);
       // 
-      // textboxpanel
+      // textboxPanel
       // 
-      this.textboxpanel.BackColor = System.Drawing.Color.Transparent;
-      this.textboxpanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-      this.textboxpanel.Location = new System.Drawing.Point(252, 52);
-      this.textboxpanel.Name = "textboxpanel";
-      this.textboxpanel.Size = new System.Drawing.Size(910, 514);
-      this.textboxpanel.TabIndex = 6;
+      this.textboxPanel.BackColor = System.Drawing.Color.Transparent;
+      this.textboxPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+      this.textboxPanel.Location = new System.Drawing.Point(252, 52);
+      this.textboxPanel.Name = "textboxPanel";
+      this.textboxPanel.Size = new System.Drawing.Size(910, 514);
+      this.textboxPanel.TabIndex = 6;
       // 
-      // SaveAns
+      // saveAns
       // 
-      this.SaveAns.Enabled = false;
-      this.SaveAns.Location = new System.Drawing.Point(36, 272);
-      this.SaveAns.Name = "SaveAns";
-      this.SaveAns.Size = new System.Drawing.Size(110, 33);
-      this.SaveAns.TabIndex = 7;
-      this.SaveAns.Text = "保存";
-      this.SaveAns.UseVisualStyleBackColor = true;
-      this.SaveAns.Click += new System.EventHandler(this.SaveAns_Click);
+      this.saveAns.Enabled = false;
+      this.saveAns.Location = new System.Drawing.Point(36, 272);
+      this.saveAns.Name = "saveAns";
+      this.saveAns.Size = new System.Drawing.Size(110, 33);
+      this.saveAns.TabIndex = 7;
+      this.saveAns.Text = "保存";
+      this.saveAns.UseVisualStyleBackColor = true;
+      this.saveAns.Click += new System.EventHandler(this.SaveAns_Click);
       // 
       // oldProAns
       // 
@@ -122,8 +122,8 @@
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.ClientSize = new System.Drawing.Size(1249, 648);
       this.Controls.Add(this.oldProAns);
-      this.Controls.Add(this.SaveAns);
-      this.Controls.Add(this.textboxpanel);
+      this.Controls.Add(this.saveAns);
+      this.Controls.Add(this.textboxPanel);
       this.Controls.Add(this.drawPiecesMove);
       this.Controls.Add(this.canvas);
       this.Controls.Add(this.drawPieces);
@@ -146,8 +146,8 @@
     private System.Windows.Forms.PictureBox canvas;
     private System.Windows.Forms.Button drawPiecesMove;
     private System.Windows.Forms.Button drawPieces;
-    private System.Windows.Forms.Panel textboxpanel;
-    private System.Windows.Forms.Button SaveAns;
+    private System.Windows.Forms.Panel textboxPanel;
+    private System.Windows.Forms.Button saveAns;
     private System.Windows.Forms.Button oldProAns;
   }
 }

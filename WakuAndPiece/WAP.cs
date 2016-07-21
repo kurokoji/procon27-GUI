@@ -22,7 +22,9 @@ namespace WakuAndPiece {
       // 変更があったら有効にする
       this.state.piecesMoveChanged += (x) => {
         this.drawPiecesMove.Enabled = x != null;
-        this.SaveAns.Enabled = x != null;
+      };
+      this.state.piecesMoveChanged += (x) => {
+        this.saveAns.Enabled = x != null;
       };
       this.state.problemChanged += (x) => {
         this.drawPieces.Enabled = x != null;
@@ -133,23 +135,29 @@ namespace WakuAndPiece {
 
     /* WakuAndPieceが読まれた際の処理(1度だけ) */
     private void WakuAndPiece_Load(object sender, EventArgs e) {
-      this.textboxpanel.Controls.Add(canvas);
+      this.textboxPanel.Controls.Add(canvas);
       this.canvas.Location = new Point(0, 0);
     }
 
     /* 解答の保存をする際のボタン */
     private void SaveAns_Click(object sender, EventArgs e) {
+      const string problemExtension = ".kudo";
+      const string answerExtension = ".shinobu";
+
       // 日付の取得
       DateTime nowDate = DateTime.Now;
       
       // 保存するファイルの名前
-      string Name = nowDate.ToString("yyyy_MM_dd_HH_mm_ss");
+      string name = nowDate.ToString("yyyy_MM_dd_HH_mm_ss");
+      string problemFileName = "Problem_" + name + problemExtension;
+      string answerFileName = "Answer_" + name + answerExtension;
+
       // 問題
-      using (StreamWriter sw = new StreamWriter("Problem_" + Name + ".kudo")) {
+      using (StreamWriter sw = new StreamWriter(problemFileName)) {
         problem.toStream(sw);
       }
       // 解答
-      using (StreamWriter sw = new StreamWriter("Answer_" + Name + ".shinobu")) {
+      using (StreamWriter sw = new StreamWriter(answerFileName)) {
         sw.WriteLine(piecesMove.Length);
         foreach (PieceMove pm in piecesMove) {
           pm.toStream(sw);
@@ -160,25 +168,25 @@ namespace WakuAndPiece {
     /* 過去の問題と解答の読み込み */
     private void oldProAns_Click(object sender, EventArgs e) {
       // 「ファイルを開く」ダイアログ
-      OpenFileDialog proofd = new OpenFileDialog();
-      OpenFileDialog ansofd = new OpenFileDialog();
+      OpenFileDialog proOfd = new OpenFileDialog();
+      OpenFileDialog ansOfd = new OpenFileDialog();
 
-      proofd.Filter = "kudoファイル(*.kudo)|*.kudo|すべてのファイル(*.*)|*.*";
-      proofd.Title = "開くファイルを選択してください";
-      proofd.RestoreDirectory = true;
+      proOfd.Filter = "kudoファイル(*.kudo)|*.kudo|すべてのファイル(*.*)|*.*";
+      proOfd.Title = "開くファイルを選択してください";
+      proOfd.RestoreDirectory = true;
 
-      ansofd.Filter = "shinobuファイル(*.shinobu)|*.shinobu|すべてのファイル(*.*)|*.*";
-      ansofd.Title = "開くファイルを選択してください";
-      ansofd.RestoreDirectory = true;
+      ansOfd.Filter = "shinobuファイル(*.shinobu)|*.shinobu|すべてのファイル(*.*)|*.*";
+      ansOfd.Title = "開くファイルを選択してください";
+      ansOfd.RestoreDirectory = true;
 
-      if (proofd.ShowDialog() == DialogResult.OK) {
-        if (ansofd.ShowDialog() == DialogResult.OK) {
+      if (proOfd.ShowDialog() == DialogResult.OK) {
+        if (ansOfd.ShowDialog() == DialogResult.OK) {
           // 問題
-          using (StreamReader sr = new StreamReader(proofd.OpenFile())) {
+          using (StreamReader sr = new StreamReader(proOfd.OpenFile())) {
             problem = Problem.fromStream(sr);
           }
           // 解答
-          using (StreamReader sr = new StreamReader(ansofd.OpenFile())) {
+          using (StreamReader sr = new StreamReader(ansOfd.OpenFile())) {
             piecesMove = problem.readAnswerStream(sr);
           }
         }
