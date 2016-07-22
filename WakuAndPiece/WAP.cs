@@ -16,6 +16,9 @@ namespace WakuAndPiece {
   using Hole = Polygon;
 
   public partial class WakuAndPiece : Form {
+    const string problemExtension = "kudo";
+    const string answerExtension = "shinobu";
+
     public WakuAndPiece() {
       InitializeComponent();
       this.state = new FormState();
@@ -28,6 +31,8 @@ namespace WakuAndPiece {
       };
       this.state.problemChanged += (x) => {
         this.drawPieces.Enabled = x != null;
+      };
+      this.state.problemChanged += (x) => {
         this.outputSolve.Enabled = x != null;
       };
     }
@@ -141,16 +146,13 @@ namespace WakuAndPiece {
 
     /* 解答の保存をする際のボタン */
     private void SaveAns_Click(object sender, EventArgs e) {
-      const string problemExtension = ".kudo";
-      const string answerExtension = ".shinobu";
-
       // 日付の取得
       DateTime nowDate = DateTime.Now;
       
       // 保存するファイルの名前
       string name = nowDate.ToString("yyyy_MM_dd_HH_mm_ss");
-      string problemFileName = "Problem_" + name + problemExtension;
-      string answerFileName = "Answer_" + name + answerExtension;
+      string problemFileName = String.Format("Problem_{0}.{1}", name, problemExtension);
+      string answerFileName = String.Format("Answer_{0}.{1}", name, answerExtension);
 
       // 問題
       using (StreamWriter sw = new StreamWriter(problemFileName)) {
@@ -171,11 +173,11 @@ namespace WakuAndPiece {
       OpenFileDialog proOfd = new OpenFileDialog();
       OpenFileDialog ansOfd = new OpenFileDialog();
 
-      proOfd.Filter = "kudoファイル(*.kudo)|*.kudo|すべてのファイル(*.*)|*.*";
+      proOfd.Filter = String.Format("{0}ファイル(*.{0})|*.{0}|すべてのファイル(*.*)|*.*", problemExtension);
       proOfd.Title = "開くファイルを選択してください";
       proOfd.RestoreDirectory = true;
 
-      ansOfd.Filter = "shinobuファイル(*.shinobu)|*.shinobu|すべてのファイル(*.*)|*.*";
+      ansOfd.Filter = String.Format("{0}ファイル(*.{0})|*.{0}|すべてのファイル(*.*)|*.*", answerExtension);
       ansOfd.Title = "開くファイルを選択してください";
       ansOfd.RestoreDirectory = true;
 
