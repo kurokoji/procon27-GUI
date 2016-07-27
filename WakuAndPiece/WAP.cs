@@ -16,6 +16,9 @@ namespace WakuAndPiece {
   using Hole = Polygon;
 
   public partial class WakuAndPiece : Form {
+    const string problemExtension = "kudo";
+    const string answerExtension = "shinobu";
+
     public WakuAndPiece() {
       InitializeComponent();
       this.state = new FormState();
@@ -23,8 +26,13 @@ namespace WakuAndPiece {
       this.state.piecesMoveChanged += (x) => {
         this.drawPiecesMove.Enabled = x != null;
       };
+      this.state.piecesMoveChanged += (x) => {
+        this.saveAns.Enabled = x != null;
+      };
       this.state.problemChanged += (x) => {
         this.drawPieces.Enabled = x != null;
+      };
+      this.state.problemChanged += (x) => {
         this.outputSolve.Enabled = x != null;
       };
     }
@@ -75,11 +83,8 @@ namespace WakuAndPiece {
 
       // 読み込みプロセスの開始
       using (Process readQuestreader = Process.Start(readQuestInfo)) {
-        /* 今はテキストから読み込んでるだけ 5/22 */
         // フレーム,ピース情報を読み込む
-        using (StreamReader questReader = readQuestreader.StandardOutput) { //new StreamReader("quest.txt")
-          problem = Problem.fromStream(questReader);
-        }
+        problem = Problem.fromStream(readQuestreader.StandardOutput);
       }
     }
     
@@ -92,19 +97,11 @@ namespace WakuAndPiece {
       processInfo.RedirectStandardOutput = true;
 
       using (Process processSolver = Process.Start(processInfo)) {
-        /* 今はテキストに書き込んでるだけ */
         // フレーム,ピース情報を書き込む
-        using (StreamWriter picInfoWriter = processSolver.StandardInput) { // new StreamWriter("toPic.txt") 
-          problem.toStream(picInfoWriter);
-          using (StreamReader answerReader = processSolver.StandardOutput) { //new StreamReader("answer.txt")
-            piecesMove = problem.readAnswerStream(answerReader);
-          }
-        }
+        problem.toStream(processSolver.StandardInput);
+        processSolver.StandardInput.Flush();
+        piecesMove = problem.readAnswerStream(processSolver.StandardOutput);
       }
-    }
-
-    /* */
-    private void answerfromSolver_Click(object sender, EventArgs e) {
     }
 
     /* 描画 */
@@ -143,8 +140,59 @@ namespace WakuAndPiece {
 
     /* WakuAndPieceが読まれた際の処理(1度だけ) */
     private void WakuAndPiece_Load(object sender, EventArgs e) {
-      this.labelpanel.Controls.Add(canvas);
+      this.textboxPanel.Controls.Add(canvas);
       this.canvas.Location = new Point(0, 0);
+    }
+
+    /* 解答の保存をする際のボタン */
+    private void SaveAns_Click(object sender, EventArgs e) {
+      // 日付の取得
+      DateTime nowDate = DateTime.Now;
+      
+      // 保存するファイルの名前
+      string name = nowDate.ToString("yyyy_MM_dd_HH_mm_ss");
+      string problemFileName = String.Format("Problem_{0}.{1}", name, problemExtension);
+      string answerFileName = String.Format("Answer_{0}.{1}", name, answerExtension);
+
+      // 問題
+      using (StreamWriter sw = new StreamWriter(problemFileName)) {
+        problem.toStream(sw);
+      }
+      // 解答
+      using (StreamWriter sw = new StreamWriter(answerFileName)) {
+        sw.WriteLine(piecesMove.Length);
+        foreach (PieceMove pm in piecesMove) {
+          pm.toStream(sw);
+        }
+      }
+    }
+
+    /* 過去の問題と解答の読み込み */
+    private void oldProAns_Click(object sender, EventArgs e) {
+      // 「ファイルを開く」ダイアログ
+      OpenFileDialog proOfd = new OpenFileDialog();
+      OpenFileDialog ansOfd = new OpenFileDialog();
+
+      proOfd.Filter = String.Format("{0}ファイル(*.{0})|*.{0}|すべてのファイル(*.*)|*.*", problemExtension);
+      proOfd.Title = "開くファイルを選択してください";
+      proOfd.RestoreDirectory = true;
+
+      ansOfd.Filter = String.Format("{0}ファイル(*.{0})|*.{0}|すべてのファイル(*.*)|*.*", answerExtension);
+      ansOfd.Title = "開くファイルを選択してください";
+      ansOfd.RestoreDirectory = true;
+
+      if (proOfd.ShowDialog() == DialogResult.OK) {
+        if (ansOfd.ShowDialog() == DialogResult.OK) {
+          // 問題
+          using (StreamReader sr = new StreamReader(proOfd.OpenFile())) {
+            problem = Problem.fromStream(sr);
+          }
+          // 解答
+          using (StreamReader sr = new StreamReader(ansOfd.OpenFile())) {
+            piecesMove = problem.readAnswerStream(sr);
+          }
+        }
+      }
     }
   }
 
@@ -208,6 +256,11 @@ namespace WakuAndPiece {
     public void draw(Graphics g, Brush brush, PictureBox canvas) {
       piece.rotate(rad).move(X, Y).draw(g, brush, canvas);
     }
+
+    // 解答の出力
+    public void toStream(StreamWriter sw) {
+      sw.WriteLine("{0} {1} {2} {3}", piece.ID, X, Y, rad);
+    }
   }
 
   // 図形(フレームの穴とピースに使われる)
@@ -246,6 +299,8 @@ namespace WakuAndPiece {
       return new Polygon(vertices);
     }
 
+    const int ID_WIDTH = 25;
+    const int ID_HEIGHT = 10;
     // 図形の描画
     public void draw(Graphics g, Brush brush, PictureBox canvas) {
       PointF[] points = this.vertices.Select((x) => x.toPointF()).ToArray();
@@ -255,7 +310,7 @@ namespace WakuAndPiece {
       TextBox IDTextbox = new TextBox();
       IDTextbox.Location = getGravity().toPoint();
       IDTextbox.Text = ID.ToString();
-      IDTextbox.Size = new Size(25, 10);
+      IDTextbox.Size = new Size(ID_WIDTH, ID_HEIGHT);
       // canvasの子コントロールに追加(これで表示される)
       canvas.Controls.Add(IDTextbox);
     }
