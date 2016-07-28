@@ -267,7 +267,7 @@ namespace WakuAndPiece {
   class Polygon {
     // 重心の取得
     public Vertex getGravity() {
-      return vertices.Aggregate((acc, x) => acc + x) / vertices.Length;
+      return vertices.Aggregate((acc, x) => acc + x) / vertices.Length / 2.0;
     }
 
     public Vertex[] vertices { get; }
@@ -299,15 +299,16 @@ namespace WakuAndPiece {
       return new Polygon(vertices);
     }
 
-    const int ID_WIDTH = 25;
+    const int ID_WIDTH = 20;
     const int ID_HEIGHT = 10;
     // 図形の描画
     public void draw(Graphics g, Brush brush, PictureBox canvas) {
-      PointF[] points = this.vertices.Select((x) => x.toPointF()).ToArray();
+      PointF[] points = this.vertices.Select((x) => (x / 2.0).toPointF()).ToArray();
       g.FillPolygon(brush, points);
 
       // IDを表示するためのTextbox
       TextBox IDTextbox = new TextBox();
+      IDTextbox.Font = new Font("Meiryo UI", 8);
       IDTextbox.Location = getGravity().toPoint();
       IDTextbox.Text = ID.ToString();
       IDTextbox.Size = new Size(ID_WIDTH, ID_HEIGHT);
