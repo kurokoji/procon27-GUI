@@ -31,7 +31,9 @@
       this.textboxPanel = new System.Windows.Forms.Panel();
       this.saveAns = new System.Windows.Forms.Button();
       this.oldProAns = new System.Windows.Forms.Button();
+      this.pieceListpanel = new System.Windows.Forms.Panel();
       ((System.ComponentModel.ISupportInitialize)(this.canvas)).BeginInit();
+      this.textboxPanel.SuspendLayout();
       this.SuspendLayout();
       // 
       // drawPieces
@@ -69,7 +71,7 @@
       // canvas
       // 
       this.canvas.BackColor = System.Drawing.Color.Transparent;
-      this.canvas.Location = new System.Drawing.Point(252, 52);
+      this.canvas.Location = new System.Drawing.Point(-1, -1);
       this.canvas.Name = "canvas";
       this.canvas.Size = new System.Drawing.Size(910, 514);
       this.canvas.TabIndex = 4;
@@ -90,7 +92,8 @@
       // 
       this.textboxPanel.BackColor = System.Drawing.Color.Transparent;
       this.textboxPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-      this.textboxPanel.Location = new System.Drawing.Point(252, 52);
+      this.textboxPanel.Controls.Add(this.canvas);
+      this.textboxPanel.Location = new System.Drawing.Point(188, 52);
       this.textboxPanel.Name = "textboxPanel";
       this.textboxPanel.Size = new System.Drawing.Size(910, 514);
       this.textboxPanel.TabIndex = 6;
@@ -116,16 +119,24 @@
       this.oldProAns.UseVisualStyleBackColor = true;
       this.oldProAns.Click += new System.EventHandler(this.oldProAns_Click);
       // 
+      // pieceListpanel
+      // 
+      this.pieceListpanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+      this.pieceListpanel.Location = new System.Drawing.Point(1118, 52);
+      this.pieceListpanel.Name = "pieceListpanel";
+      this.pieceListpanel.Size = new System.Drawing.Size(220, 514);
+      this.pieceListpanel.TabIndex = 9;
+      // 
       // WakuAndPiece
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.ClientSize = new System.Drawing.Size(1249, 648);
+      this.ClientSize = new System.Drawing.Size(1350, 729);
+      this.Controls.Add(this.pieceListpanel);
       this.Controls.Add(this.oldProAns);
       this.Controls.Add(this.saveAns);
       this.Controls.Add(this.textboxPanel);
       this.Controls.Add(this.drawPiecesMove);
-      this.Controls.Add(this.canvas);
       this.Controls.Add(this.drawPieces);
       this.Controls.Add(this.outputSolve);
       this.Controls.Add(this.readFramePiece);
@@ -133,8 +144,10 @@
       this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
       this.Name = "WakuAndPiece";
       this.Text = "WAP";
+      this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
       this.Load += new System.EventHandler(this.WakuAndPiece_Load);
       ((System.ComponentModel.ISupportInitialize)(this.canvas)).EndInit();
+      this.textboxPanel.ResumeLayout(false);
       this.ResumeLayout(false);
 
     }
@@ -149,6 +162,7 @@
     private System.Windows.Forms.Panel textboxPanel;
     private System.Windows.Forms.Button saveAns;
     private System.Windows.Forms.Button oldProAns;
+    private System.Windows.Forms.Panel pieceListpanel;
   }
 }
 
