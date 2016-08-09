@@ -472,5 +472,47 @@ namespace WakuAndPiece {
       }
       return piecesMove;
     }
+    
+    // ピースリストへの描画
+    public void showpieceList(Panel listPanel) {
+      // listPanelの子コントロールをクリア
+      listPanel.Controls.Clear();
+      // ピースとピースの幅
+      const int show_Width = 30;
+      
+      // 一番右にある点のX座標とピース自体の幅を取得
+      double canvas_Width = -1.0, canvas_Height = 0.0;
+      foreach (Polygon pol in pieces) {
+        canvas_Width = Math.Max(canvas_Width, pol.getRightMost());
+        canvas_Height += Math.Abs(pol.getTopMost() - pol.getBottomMost());
+      }
+
+      // PanelよりPictureBoxが大きくなったらスクロールバーを表示
+      listPanel.AutoScroll = true;
+      PictureBox canvas = new PictureBox();
+      // 余裕をもって大きさを二倍取る
+      canvas.Size = new Size((int)canvas_Width, (int)canvas_Height + show_Width * pieces.Length);
+      canvas.Image = new Bitmap(canvas.Height, canvas.Width);
+      listPanel.Controls.Add(canvas);
+      canvas.Location = new Point(0, 0);
+
+      using (Graphics g = Graphics.FromImage(canvas.Image)) {
+        g.SmoothingMode = SmoothingMode.AntiAlias;
+
+        Random rng = new Random();
+        // 原点からどれだけずらすか
+        double space = show_Width;
+        // 描画
+        foreach (Polygon pol in pieces) {
+          pol.draw(g, randomBrush(rng), canvas, new Vertex(-pol.getLeftMost() + show_Width, space - pol.getTopMost()));
+          space += Math.Abs(pol.getTopMost() - pol.getBottomMost()) + show_Width;
+        }
+      }
+    }
+
+    /* 色をランダムに生成 */
+    private Brush randomBrush(Random rng) {
+      return new SolidBrush(Color.FromArgb(rng.Next(255), rng.Next(255), rng.Next(255)));
+    }
   }
 }
