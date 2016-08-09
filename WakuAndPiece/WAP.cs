@@ -340,6 +340,42 @@ namespace WakuAndPiece {
       // 移動後のPolygonを返す
       return new Polygon(moved, this.ID);
     }
+
+    // 最も左にある座標のX座標の取得
+    public double getLeftMost() {
+      double res = vertices[0].X;
+      foreach (Vertex v in vertices) {
+        res = Math.Min(v.X, res);
+      }
+      return res;
+    }
+
+    // 最も右にある座標のX座標の取得
+    public double getRightMost() {
+      double res = vertices[0].X;
+      foreach (Vertex v in vertices) {
+        res = Math.Max(v.X, res);
+      }
+      return res;
+    }
+
+    // 最も上にある座標のY座標の取得
+    public double getTopMost() {
+      double res = vertices[0].Y;
+      foreach (Vertex v in vertices) {
+        res = Math.Min(v.Y, res);
+      }
+      return res;
+    }
+
+    // 最も下にある座標のY座標の取得
+    public double getBottomMost() {
+      double res = vertices[0].Y;
+      foreach (Vertex v in vertices) {
+        res = Math.Max(v.Y, res);
+      }
+      return res;
+    }
   }
 
   // フレーム
