@@ -86,6 +86,8 @@ namespace WakuAndPiece {
         // フレーム,ピース情報を読み込む
         problem = Problem.fromStream(readQuestreader.StandardOutput);
       }
+      // リストへの描画
+      problem.showpieceList(pieceListpanel);
     }
     
     /* ソルバーにフレーム,ピース情報を出力 */
@@ -191,6 +193,8 @@ namespace WakuAndPiece {
           using (StreamReader sr = new StreamReader(ansOfd.OpenFile())) {
             piecesMove = problem.readAnswerStream(sr);
           }
+          // リストへの描画
+          problem.showpieceList(pieceListpanel);
         }
       }
     }
