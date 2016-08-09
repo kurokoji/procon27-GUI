@@ -315,7 +315,22 @@ namespace WakuAndPiece {
       // canvasの子コントロールに追加(これで表示される)
       canvas.Controls.Add(IDTextbox);
     }
-    
+
+    // 図形の描画(list用)
+    public void draw(Graphics g, Brush brush, PictureBox canvas, Vertex space) {
+      PointF[] points = this.vertices.Select((x) => ((x + space) / 2.0).toPointF()).ToArray();
+      g.FillPolygon(brush, points);
+
+      // IDを表示するためのTextbox
+      TextBox IDTextbox = new TextBox();
+      IDTextbox.Font = new Font("Meiryo UI", 8);
+      IDTextbox.Location = (getGravity() + (space / 2.0)).toPoint();
+      IDTextbox.Text = ID.ToString();
+      IDTextbox.Size = new Size(ID_WIDTH, ID_HEIGHT);
+      // canvasの子コントロールに追加(これで表示される)
+      canvas.Controls.Add(IDTextbox);
+    }
+     
     public void toStream(StreamWriter sw) {
       // 要素数を出力
       sw.WriteLine(vertices.Length);
