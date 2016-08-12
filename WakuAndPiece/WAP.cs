@@ -273,8 +273,21 @@ namespace WakuAndPiece {
   // 図形(フレームの穴とピースに使われる)
   class Polygon {
     // 重心の取得
+    // http://homepage1.nifty.com/gfk/polygon-G.htm
+    // http://d.hatena.ne.jp/n-trino/20141202
     public Vertex getGravity() {
-      return vertices.Aggregate((acc, x) => acc + x) / vertices.Length / 2.0;
+      double sumS = 0;
+      double sumX = 0, sumY = 0;
+      int N = vertices.Length;
+
+      for (int i = 0; i < N; ++i) {
+        double s = (vertices[i % N].X * vertices[(i + 1) % N].Y - vertices[i % N].Y * vertices[(i + 1) % N].X) / 2;
+        Vertex g = (vertices[i % N] + vertices[(i + 1) % N]) / 3;
+        sumS += s;
+        sumX += s * g.X;
+        sumY += s * g.Y;
+      }
+      return new Vertex(sumX, sumY) / Math.Abs(sumS);
     }
 
     public Vertex[] vertices { get; }
