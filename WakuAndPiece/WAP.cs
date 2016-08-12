@@ -321,15 +321,17 @@ namespace WakuAndPiece {
 
     const int ID_WIDTH = 20;
     const int ID_HEIGHT = 10;
+    // 表示倍率
+    const double MAG = 0.5;
     // 図形の描画
     public void draw(Graphics g, Brush brush, PictureBox canvas) {
-      PointF[] points = this.vertices.Select((x) => (x / 2.0).toPointF()).ToArray();
+      PointF[] points = this.vertices.Select((x) => (x * MAG).toPointF()).ToArray();
       g.FillPolygon(brush, points);
 
       // IDを表示するためのTextbox
       TextBox IDTextbox = new TextBox();
       IDTextbox.Font = new Font("Meiryo UI", 8);
-      IDTextbox.Location = getGravity().toPoint();
+      IDTextbox.Location = (getGravity() * MAG).toPoint();
       IDTextbox.Text = ID.ToString();
       IDTextbox.Size = new Size(ID_WIDTH, ID_HEIGHT);
       // canvasの子コントロールに追加(これで表示される)
@@ -337,14 +339,14 @@ namespace WakuAndPiece {
     }
 
     // 図形の描画(list用)
-    public void draw(Graphics g, Brush brush, PictureBox canvas, Vertex space) {
-      PointF[] points = this.vertices.Select((x) => ((x + space) / 2.0).toPointF()).ToArray();
+    public void draw(Graphics g, Brush brush, PictureBox canvas, Vertex displace) {
+      PointF[] points = this.vertices.Select((x) => ((x + displace) * MAG).toPointF()).ToArray();
       g.FillPolygon(brush, points);
 
       // IDを表示するためのTextbox
       TextBox IDTextbox = new TextBox();
       IDTextbox.Font = new Font("Meiryo UI", 8);
-      IDTextbox.Location = (getGravity() + (space / 2.0)).toPoint();
+      IDTextbox.Location = (getGravity() * MAG + (displace * MAG)).toPoint();
       IDTextbox.Text = ID.ToString();
       IDTextbox.Size = new Size(ID_WIDTH, ID_HEIGHT);
       // canvasの子コントロールに追加(これで表示される)
@@ -498,20 +500,20 @@ namespace WakuAndPiece {
       // listPanelの子コントロールをクリア
       listPanel.Controls.Clear();
       // ピースとピースの幅
-      const int show_Width = 30;
+      const int SHOW_WIDTH = 30;
       
       // 一番右にある点のX座標とピース自体の幅を取得
-      double canvas_Width = -1.0, canvas_Height = 0.0;
+      double CANVAS_WIDTH = -1.0, CANVAS_HEIGHT = 0.0;
       foreach (Polygon pol in pieces) {
-        canvas_Width = Math.Max(canvas_Width, pol.getRightMost());
-        canvas_Height += Math.Abs(pol.getTopMost() - pol.getBottomMost());
+        CANVAS_WIDTH = Math.Max(CANVAS_WIDTH, pol.getRightMost());
+        CANVAS_HEIGHT += Math.Abs(pol.getTopMost() - pol.getBottomMost());
       }
 
       // PanelよりPictureBoxが大きくなったらスクロールバーを表示
       listPanel.AutoScroll = true;
       PictureBox canvas = new PictureBox();
       // 余裕をもって大きさを二倍取る
-      canvas.Size = new Size((int)canvas_Width, (int)canvas_Height + show_Width * pieces.Length);
+      canvas.Size = new Size((int)CANVAS_WIDTH, (int)CANVAS_HEIGHT + SHOW_WIDTH * pieces.Length);
       canvas.Image = new Bitmap(canvas.Height, canvas.Width);
       listPanel.Controls.Add(canvas);
       canvas.Location = new Point(0, 0);
@@ -521,11 +523,11 @@ namespace WakuAndPiece {
 
         Random rng = new Random();
         // 原点からどれだけずらすか
-        double space = show_Width;
+        double displace = SHOW_WIDTH;
         // 描画
         foreach (Polygon pol in pieces) {
-          pol.draw(g, randomBrush(rng), canvas, new Vertex(-pol.getLeftMost() + show_Width, space - pol.getTopMost()));
-          space += Math.Abs(pol.getTopMost() - pol.getBottomMost()) + show_Width;
+          pol.draw(g, randomBrush(rng), canvas, new Vertex(-pol.getLeftMost() + SHOW_WIDTH, displace - pol.getTopMost()));
+          displace += Math.Abs(pol.getTopMost() - pol.getBottomMost()) + SHOW_WIDTH;
         }
       }
     }
