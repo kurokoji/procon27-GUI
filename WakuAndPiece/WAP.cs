@@ -230,6 +230,9 @@ namespace WakuAndPiece {
     public static Vertex operator /(Vertex lhs, double rhs) {
       return new Vertex(lhs.X / rhs, lhs.Y / rhs);
     }
+    public static Vertex operator *(Vertex lhs, double rhs) {
+      return new Vertex(lhs.X * rhs, lhs.Y * rhs);
+    }
 
     // 回転
     public Vertex rotate(double rad) {
