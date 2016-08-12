@@ -503,17 +503,17 @@ namespace WakuAndPiece {
       const int SHOW_WIDTH = 30;
       
       // 一番右にある点のX座標とピース自体の幅を取得
-      double CANVAS_WIDTH = -1.0, CANVAS_HEIGHT = 0.0;
+      double canvas_width = -1.0, canvas_height = 0.0;
       foreach (Polygon pol in pieces) {
-        CANVAS_WIDTH = Math.Max(CANVAS_WIDTH, pol.getRightMost());
-        CANVAS_HEIGHT += Math.Abs(pol.getTopMost() - pol.getBottomMost());
+        canvas_width = Math.Max(canvas_width, pol.getRightMost());
+        canvas_height += Math.Abs(pol.getTopMost() - pol.getBottomMost());
       }
 
       // PanelよりPictureBoxが大きくなったらスクロールバーを表示
       listPanel.AutoScroll = true;
       PictureBox canvas = new PictureBox();
       // 余裕をもって大きさを二倍取る
-      canvas.Size = new Size((int)CANVAS_WIDTH, (int)CANVAS_HEIGHT + SHOW_WIDTH * pieces.Length);
+      canvas.Size = new Size((int)canvas_width, (int)canvas_height + SHOW_WIDTH * pieces.Length);
       canvas.Image = new Bitmap(canvas.Height, canvas.Width);
       listPanel.Controls.Add(canvas);
       canvas.Location = new Point(0, 0);
