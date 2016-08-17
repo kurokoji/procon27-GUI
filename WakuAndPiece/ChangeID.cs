@@ -59,10 +59,12 @@ namespace WakuAndPiece {
     }
 
     private void changeButton_Click(object sender, EventArgs e) {
-      checkchangeID(changeIDbox.Text);
+      warningMsg(changeIDbox.Text);
+      // 空にする
+      changeIDbox.Text = "";
     }
 
-    private void checkchangeID(string s) {
+    private void warningMsg(string s) {
       // 正規表現で入力された数が0以上の整数であるか判定
       if (Regex.IsMatch(s, @"^[+]?[0-9]+$")) {
         int N = int.Parse(s);
@@ -95,8 +97,6 @@ namespace WakuAndPiece {
       } else {
         MessageBox.Show("0以上の整数を入力してください", "エラー");
       }
-      // 空にする
-      changeIDbox.Text = "";
     }
   }
 }
