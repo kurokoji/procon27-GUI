@@ -46,6 +46,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ChangeID.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ChangeID.Designer.cs">
+      <DependentUpon>ChangeID.cs</DependentUpon>
+    </Compile>
     <Compile Include="WAP.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -54,6 +60,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="ChangeID.resx">
+      <DependentUpon>ChangeID.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="WAP.resx">
       <DependentUpon>WAP.cs</DependentUpon>
     </EmbeddedResource>

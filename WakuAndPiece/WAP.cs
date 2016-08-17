@@ -201,7 +201,7 @@ namespace WakuAndPiece {
   }
 
   // 座標
-  class Vertex {
+  public class Vertex {
     public double X { get; }
     public double Y { get; }
     // X,Yに値をセットするコンストラクタ
@@ -246,7 +246,7 @@ namespace WakuAndPiece {
   }
 
   // 動かすピース情報
-  class PieceMove {
+  public class PieceMove {
     public Piece piece { get; }
     public double X { get; }   // X方向に動かす分
     public double Y { get; }   // Y方向に動かす分
@@ -271,7 +271,7 @@ namespace WakuAndPiece {
   }
 
   // 図形(フレームの穴とピースに使われる)
-  class Polygon {
+  public class Polygon {
     // 重心の取得
     // http://homepage1.nifty.com/gfk/polygon-G.htm
     // http://d.hatena.ne.jp/n-trino/20141202
@@ -416,7 +416,7 @@ namespace WakuAndPiece {
   }
 
   // フレーム
-  class Frame {
+  public class Frame {
     public Hole[] holes { get; }
     // 穴情報をセットするコンストラクタ
     public Frame(Hole[] holes) {
