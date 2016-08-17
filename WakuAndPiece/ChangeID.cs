@@ -21,10 +21,12 @@ namespace WakuAndPiece {
     }
 
     private Problem problem;
-    
-    public ChangeID(Problem problem) {
+    public Panel listpanel;
+
+    public ChangeID(Problem problem, Panel panel) {
       InitializeComponent();
       this.problem = problem;
+      this.listpanel = panel;
       showPiece();
       showEmptyID();
     }
@@ -80,6 +82,7 @@ namespace WakuAndPiece {
                 // 空きのIDを表示
                 showEmptyID();
               } else {
+                problem.showpieceList(listpanel);
                 this.Close();
               }
             }
