@@ -87,7 +87,7 @@ namespace WakuAndPiece {
         problem = Problem.fromStream(readQuestreader.StandardOutput);
       }
       // ID被りがあったピースが1個以上あればID変更フォームを表示
-      if (problem.misspieces.Count > 0) {
+      if (problem.missingPieces.Count > 0) {
         ChangeID changeid = new ChangeID(problem, pieceListpanel);
         changeid.Show();
       } else {
@@ -455,13 +455,13 @@ namespace WakuAndPiece {
   public class Problem {
     public Frame frame { get; }
     public Piece[] pieces { get; }
-    public List<Piece> misspieces;
+    public List<Piece> missingPieces;
 
     // フレーム情報とピース情報をセットするコンストラクタ
-    private Problem(Frame frame, Piece[] pieces, List<Piece> misspieces) {
+    private Problem(Frame frame, Piece[] pieces, List<Piece> missingPieces) {
       this.frame = frame;
       this.pieces = pieces;
-      this.misspieces = misspieces;
+      this.missingPieces = missingPieces;
     }
     // Streamから各情報を読み取る
     public static Problem fromStream(StreamReader sr) {
@@ -471,7 +471,7 @@ namespace WakuAndPiece {
       // 要素数分だけ確保(最終的に渡す用)
       Piece[] respieces = new Piece[N];
       // IDが被ったときに一時的に保存するリスト
-      List<Piece> misspieces = new List<Piece>();
+      List<Piece> missingPieces = new List<Piece>();
       // 被っていてもとりあえずここに保存する
       List<Piece>[] pieces = new List<Piece>[N];
       for (int i = 0; i < N; i++) {
@@ -482,18 +482,18 @@ namespace WakuAndPiece {
         int inputID = int.Parse(sr.ReadLine());
         pieces[inputID].Add(Piece.fromStream(sr));
       }
-      // 被りがあればmisspiecesにAdd
+      // 被りがあればmissingPiecesにAdd
       for (int i = 0; i < N; i++) {
         if (pieces[i].Count == 1) {
           respieces[i] = new Piece(pieces[i][0].vertices, i);
         } else {
           foreach (Piece piece in pieces[i]) {
-            misspieces.Add(new Piece(piece.vertices, i));
+            missingPieces.Add(new Piece(piece.vertices, i));
           }
         }
       }
 
-      return new Problem(frame, respieces, misspieces);
+      return new Problem(frame, respieces, missingPieces);
     }
 
     // Streamに出力

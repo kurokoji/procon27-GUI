@@ -54,7 +54,7 @@ namespace WakuAndPiece {
         Random rng = new Random();
         // 子コントロールをclear
         canvas.Controls.Clear();
-        problem.misspieces[0].draw(g, randomBrush(rng), canvas);
+        problem.missingPieces[0].draw(g, randomBrush(rng), canvas);
       }
     }
 
