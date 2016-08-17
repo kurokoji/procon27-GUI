@@ -86,6 +86,11 @@ namespace WakuAndPiece {
         // フレーム,ピース情報を読み込む
         problem = Problem.fromStream(readQuestreader.StandardOutput);
       }
+      // ID被りがあったピースが1個以上あればID変更フォームを表示
+      if (problem.misspieces.Count > 0) {
+        ChangeID changeid = new ChangeID(problem);
+        changeid.Show();
+      }
     }
     
     /* ソルバーにフレーム,ピース情報を出力 */
