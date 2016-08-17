@@ -88,6 +88,11 @@ namespace WakuAndPiece {
       }
       // リストへの描画
       problem.showpieceList(pieceListpanel);
+      // ID被りがあったピースが1個以上あればID変更フォームを表示
+      if (problem.misspieces.Count > 0) {
+        ChangeID changeid = new ChangeID(problem);
+        changeid.Show();
+      }
     }
     
     /* ソルバーにフレーム,ピース情報を出力 */
