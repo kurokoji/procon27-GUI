@@ -86,6 +86,8 @@ namespace WakuAndPiece {
         // フレーム,ピース情報を読み込む
         problem = Problem.fromStream(readQuestreader.StandardOutput);
       }
+      // リストへの描画
+      problem.showpieceList(pieceListpanel);
     }
     
     /* ソルバーにフレーム,ピース情報を出力 */
@@ -191,6 +193,8 @@ namespace WakuAndPiece {
           using (StreamReader sr = new StreamReader(ansOfd.OpenFile())) {
             piecesMove = problem.readAnswerStream(sr);
           }
+          // リストへの描画
+          problem.showpieceList(pieceListpanel);
         }
       }
     }
@@ -225,6 +229,9 @@ namespace WakuAndPiece {
     // vertexとdoubleの演算用の演算子オーバーロード
     public static Vertex operator /(Vertex lhs, double rhs) {
       return new Vertex(lhs.X / rhs, lhs.Y / rhs);
+    }
+    public static Vertex operator *(Vertex lhs, double rhs) {
+      return new Vertex(lhs.X * rhs, lhs.Y * rhs);
     }
 
     // 回転
@@ -266,8 +273,21 @@ namespace WakuAndPiece {
   // 図形(フレームの穴とピースに使われる)
   class Polygon {
     // 重心の取得
+    // http://homepage1.nifty.com/gfk/polygon-G.htm
+    // http://d.hatena.ne.jp/n-trino/20141202
     public Vertex getGravity() {
-      return vertices.Aggregate((acc, x) => acc + x) / vertices.Length;
+      double sumS = 0;
+      double sumX = 0, sumY = 0;
+      int N = vertices.Length;
+
+      for (int i = 0; i < N; ++i) {
+        double s = (vertices[i % N].X * vertices[(i + 1) % N].Y - vertices[i % N].Y * vertices[(i + 1) % N].X) / 2;
+        Vertex g = (vertices[i % N] + vertices[(i + 1) % N]) / 3;
+        sumS += s;
+        sumX += s * g.X;
+        sumY += s * g.Y;
+      }
+      return new Vertex(sumX, sumY) / Math.Abs(sumS);
     }
 
     public Vertex[] vertices { get; }
@@ -299,22 +319,40 @@ namespace WakuAndPiece {
       return new Polygon(vertices);
     }
 
-    const int ID_WIDTH = 25;
+    const int ID_WIDTH = 20;
     const int ID_HEIGHT = 10;
+    // 表示倍率
+    const double MAG = 0.5;
     // 図形の描画
     public void draw(Graphics g, Brush brush, PictureBox canvas) {
-      PointF[] points = this.vertices.Select((x) => x.toPointF()).ToArray();
+      PointF[] points = this.vertices.Select((x) => (x * MAG).toPointF()).ToArray();
       g.FillPolygon(brush, points);
 
       // IDを表示するためのTextbox
       TextBox IDTextbox = new TextBox();
-      IDTextbox.Location = getGravity().toPoint();
+      IDTextbox.Font = new Font("Meiryo UI", 8);
+      IDTextbox.Location = (getGravity() * MAG).toPoint();
       IDTextbox.Text = ID.ToString();
       IDTextbox.Size = new Size(ID_WIDTH, ID_HEIGHT);
       // canvasの子コントロールに追加(これで表示される)
       canvas.Controls.Add(IDTextbox);
     }
-    
+
+    // 図形の描画(list用)
+    public void draw(Graphics g, Brush brush, PictureBox canvas, Vertex displace) {
+      PointF[] points = this.vertices.Select((x) => ((x + displace) * MAG).toPointF()).ToArray();
+      g.FillPolygon(brush, points);
+
+      // IDを表示するためのTextbox
+      TextBox IDTextbox = new TextBox();
+      IDTextbox.Font = new Font("Meiryo UI", 8);
+      IDTextbox.Location = (getGravity() * MAG + (displace * MAG)).toPoint();
+      IDTextbox.Text = ID.ToString();
+      IDTextbox.Size = new Size(ID_WIDTH, ID_HEIGHT);
+      // canvasの子コントロールに追加(これで表示される)
+      canvas.Controls.Add(IDTextbox);
+    }
+     
     public void toStream(StreamWriter sw) {
       // 要素数を出力
       sw.WriteLine(vertices.Length);
@@ -338,6 +376,42 @@ namespace WakuAndPiece {
       Vertex[] moved = this.vertices.Select((x) => x + offset).ToArray();
       // 移動後のPolygonを返す
       return new Polygon(moved, this.ID);
+    }
+
+    // 最も左にある座標のX座標の取得
+    public double getLeftMost() {
+      double res = vertices[0].X;
+      foreach (Vertex v in vertices) {
+        res = Math.Min(v.X, res);
+      }
+      return res;
+    }
+
+    // 最も右にある座標のX座標の取得
+    public double getRightMost() {
+      double res = vertices[0].X;
+      foreach (Vertex v in vertices) {
+        res = Math.Max(v.X, res);
+      }
+      return res;
+    }
+
+    // 最も上にある座標のY座標の取得
+    public double getTopMost() {
+      double res = vertices[0].Y;
+      foreach (Vertex v in vertices) {
+        res = Math.Min(v.Y, res);
+      }
+      return res;
+    }
+
+    // 最も下にある座標のY座標の取得
+    public double getBottomMost() {
+      double res = vertices[0].Y;
+      foreach (Vertex v in vertices) {
+        res = Math.Max(v.Y, res);
+      }
+      return res;
     }
   }
 
@@ -419,6 +493,48 @@ namespace WakuAndPiece {
         piecesMove[i] = new PieceMove(x, y, rad, pieces[id]);
       }
       return piecesMove;
+    }
+    
+    // ピースリストへの描画
+    public void showpieceList(Panel listPanel) {
+      // listPanelの子コントロールをクリア
+      listPanel.Controls.Clear();
+      // ピースとピースの幅
+      const int SHOW_WIDTH = 30;
+      
+      // 一番右にある点のX座標とピース自体の幅を取得
+      double canvas_width = -1.0, canvas_height = 0.0;
+      foreach (Polygon pol in pieces) {
+        canvas_width = Math.Max(canvas_width, pol.getRightMost());
+        canvas_height += Math.Abs(pol.getTopMost() - pol.getBottomMost());
+      }
+
+      // PanelよりPictureBoxが大きくなったらスクロールバーを表示
+      listPanel.AutoScroll = true;
+      PictureBox canvas = new PictureBox();
+      // 余裕をもって大きさを二倍取る
+      canvas.Size = new Size((int)canvas_width, (int)canvas_height + SHOW_WIDTH * pieces.Length);
+      canvas.Image = new Bitmap(canvas.Height, canvas.Width);
+      listPanel.Controls.Add(canvas);
+      canvas.Location = new Point(0, 0);
+
+      using (Graphics g = Graphics.FromImage(canvas.Image)) {
+        g.SmoothingMode = SmoothingMode.AntiAlias;
+
+        Random rng = new Random();
+        // 原点からどれだけずらすか
+        double displace = SHOW_WIDTH;
+        // 描画
+        foreach (Polygon pol in pieces) {
+          pol.draw(g, randomBrush(rng), canvas, new Vertex(-pol.getLeftMost() + SHOW_WIDTH, displace - pol.getTopMost()));
+          displace += Math.Abs(pol.getTopMost() - pol.getBottomMost()) + SHOW_WIDTH;
+        }
+      }
+    }
+
+    /* 色をランダムに生成 */
+    private Brush randomBrush(Random rng) {
+      return new SolidBrush(Color.FromArgb(rng.Next(255), rng.Next(255), rng.Next(255)));
     }
   }
 }
