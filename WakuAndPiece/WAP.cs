@@ -86,8 +86,14 @@ namespace WakuAndPiece {
         // フレーム,ピース情報を読み込む
         problem = Problem.fromStream(readQuestreader.StandardOutput);
       }
-      // リストへの描画
-      problem.showpieceList(pieceListpanel);
+      // ID被りがあったピースが1個以上あればID変更フォームを表示
+      if (problem.missingPieces.Count > 0) {
+        ChangeID changeid = new ChangeID(problem, pieceListpanel);
+        changeid.Show();
+      } else {
+        // リストへの描画
+        problem.showpieceList(pieceListpanel);
+      }
     }
     
     /* ソルバーにフレーム,ピース情報を出力 */
@@ -201,7 +207,7 @@ namespace WakuAndPiece {
   }
 
   // 座標
-  class Vertex {
+  public class Vertex {
     public double X { get; }
     public double Y { get; }
     // X,Yに値をセットするコンストラクタ
@@ -246,7 +252,7 @@ namespace WakuAndPiece {
   }
 
   // 動かすピース情報
-  class PieceMove {
+  public class PieceMove {
     public Piece piece { get; }
     public double X { get; }   // X方向に動かす分
     public double Y { get; }   // Y方向に動かす分
@@ -271,7 +277,7 @@ namespace WakuAndPiece {
   }
 
   // 図形(フレームの穴とピースに使われる)
-  class Polygon {
+  public class Polygon {
     // 重心の取得
     // http://homepage1.nifty.com/gfk/polygon-G.htm
     // http://d.hatena.ne.jp/n-trino/20141202
@@ -416,7 +422,7 @@ namespace WakuAndPiece {
   }
 
   // フレーム
-  class Frame {
+  public class Frame {
     public Hole[] holes { get; }
     // 穴情報をセットするコンストラクタ
     public Frame(Hole[] holes) {
@@ -446,27 +452,48 @@ namespace WakuAndPiece {
     }
   }
 
-  class Problem {
+  public class Problem {
     public Frame frame { get; }
     public Piece[] pieces { get; }
+    public List<Piece> missingPieces;
 
     // フレーム情報とピース情報をセットするコンストラクタ
-    private Problem(Frame frame, Piece[] pieces) {
+    private Problem(Frame frame, Piece[] pieces, List<Piece> missingPieces) {
       this.frame = frame;
       this.pieces = pieces;
+      this.missingPieces = missingPieces;
     }
     // Streamから各情報を読み取る
     public static Problem fromStream(StreamReader sr) {
       Frame frame = Frame.fromStream(sr);
       // 要素数の入力
       int N = int.Parse(sr.ReadLine());
-      // 要素数分だけ確保
-      Piece[] pieces = new Piece[N];
+      // 要素数分だけ確保(最終的に渡す用)
+      Piece[] respieces = new Piece[N];
+      // IDが被ったときに一時的に保存するリスト
+      List<Piece> missingPieces = new List<Piece>();
+      // 被っていてもとりあえずここに保存する
+      List<Piece>[] pieces = new List<Piece>[N];
       for (int i = 0; i < N; i++) {
-        pieces[i] = Piece.fromStream(sr);
-        pieces[i].ID = i;
+        pieces[i] = new List<Piece>();
       }
-      return new Problem(frame, pieces);
+
+      for (int i = 0; i < N; i++) {
+        int inputID = int.Parse(sr.ReadLine());
+        pieces[inputID].Add(Piece.fromStream(sr));
+      }
+      // 被りがあればmissingPiecesにAdd
+      for (int i = 0; i < N; i++) {
+        if (pieces[i].Count == 1) {
+          respieces[i] = new Piece(pieces[i][0].vertices, i);
+        } else {
+          foreach (Piece piece in pieces[i]) {
+            missingPieces.Add(new Piece(piece.vertices, i));
+          }
+        }
+      }
+
+      return new Problem(frame, respieces, missingPieces);
     }
 
     // Streamに出力
