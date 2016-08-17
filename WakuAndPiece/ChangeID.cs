@@ -66,36 +66,39 @@ namespace WakuAndPiece {
 
     private void warningMsg(string s) {
       // 正規表現で入力された数が0以上の整数であるか判定
-      if (Regex.IsMatch(s, @"^[+]?[0-9]+$")) {
-        int N = int.Parse(s);
-        // 入力されたIDが存在するか(配列外参照を防ぐ)
-        if (N < problem.pieces.Length) {
-          // 入力されたIDが空であれば変更を許可する
-          if (problem.pieces[N] == null) {
-            DialogResult res = MessageBox.Show("IDを" + s + "へ変更します", "警告", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
-            if (res == DialogResult.Yes) {
-              problem.pieces[N] = new Piece(problem.misspieces[0].vertices, N);
-              // 修正すべきピースが無くなったら閉じる
-              if (problem.misspieces.Count > 1) {
-                // 先頭を削除
-                problem.misspieces.RemoveAt(0);
-                // ピースを表示
-                showPiece();
-                // 空きのIDを表示
-                showEmptyID();
-              } else {
-                problem.showpieceList(listpanel);
-                this.Close();
-              }
-            }
-          } else {
-            MessageBox.Show(s + "は空ではありません", "エラー");
-          }
-        } else {
-          MessageBox.Show(s + "はIDとして存在しません", "エラー");
-        }
-      } else {
+      if (!Regex.IsMatch(s, @"^[0-9]+$")) {
         MessageBox.Show("0以上の整数を入力してください", "エラー");
+        return;
+      }
+      int N = int.Parse(s);
+      // 入力されたIDが存在するか(配列外参照を防ぐ)
+      if (N >= problem.pieces.Length) {
+        MessageBox.Show(s + "はIDとして存在しません", "エラー");
+        return;
+      }
+      // 入力されたIDが空であれば変更を許可する
+      if (problem.pieces[N] != null) {
+        MessageBox.Show(s + "は空ではありません", "エラー");
+        return;
+      }
+      DialogResult res = MessageBox.Show("IDを" + s + "へ変更します", "警告", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+      if (res != DialogResult.Yes) {
+        return;
+      }
+
+      problem.pieces[N] = new Piece(problem.missingPieces[0].vertices, N);
+      // 先頭を削除
+      problem.missingPieces.RemoveAt(0);
+      // 修正すべきピースが無くなったら閉じる
+      if (problem.missingPieces.Count == 0) {
+        // listpanelへ描画
+        problem.showpieceList(listpanel);
+        this.Close();
+      } else {
+        // ピースの描画
+        showPiece();
+        // 空のIDの表示
+        showEmptyID();
       }
     }
   }
