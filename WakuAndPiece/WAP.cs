@@ -362,8 +362,9 @@ namespace WakuAndPiece {
       return new Polygon(vertices);
     }
 
-    const int ID_WIDTH = 20;
-    const int ID_HEIGHT = 10;
+    const int ID_WIDTH = 30;
+    const int ID_HEIGHT = 20;
+    Vertex LABEL_GAP { get; } = new Vertex(10, 10);
     // 表示倍率
     const double MAG = 0.5;
     // 図形の描画
@@ -372,13 +373,14 @@ namespace WakuAndPiece {
       g.FillPolygon(brush, points);
 
       // IDを表示するためのTextbox
-      TextBox IDTextbox = new TextBox();
-      IDTextbox.Font = new Font("Meiryo UI", 8);
-      IDTextbox.Location = (vertices[0] * MAG).toPoint();
-      IDTextbox.Text = ID.ToString();
-      IDTextbox.Size = new Size(ID_WIDTH, ID_HEIGHT);
+      Label IDLabel = new Label();
+      IDLabel.BackColor = Color.Transparent;
+      IDLabel.Font = new Font("Meiryo UI", 8);
+      IDLabel.Location = ((getGravity() - LABEL_GAP) * MAG).toPoint();
+      IDLabel.Text = ID.ToString();
+      IDLabel.Size = new Size(ID_WIDTH, ID_HEIGHT);
       // canvasの子コントロールに追加(これで表示される)
-      canvas.Controls.Add(IDTextbox);
+      canvas.Controls.Add(IDLabel);
     }
 
     // 図形の描画(list用)
@@ -386,15 +388,15 @@ namespace WakuAndPiece {
       PointF[] points = this.vertices.Select((x) => ((x + displace) * MAG).toPointF()).ToArray();
       g.FillPolygon(brush, points);
 
-      // IDを表示するためのTextbox
-      TextBox IDTextbox = new TextBox();
-      IDTextbox.Font = new Font("Meiryo UI", 8);
-      IDTextbox.Location = (vertices[0] * MAG + (displace * MAG)).toPoint();
-      IDTextbox.Text = ID.ToString();
-      IDTextbox.Size = new Size(ID_WIDTH, ID_HEIGHT);
+      // IDを表示するためのLabel
+      Label IDLabel = new Label();
+      IDLabel.BackColor = Color.Transparent;
+      IDLabel.Font = new Font("Meiryo UI", 8);
+      IDLabel.Location = ((getGravity() - LABEL_GAP) * MAG + (displace * MAG)).toPoint();
+      IDLabel.Text = ID.ToString();
+      IDLabel.Size = new Size(ID_WIDTH, ID_HEIGHT);
       // canvasの子コントロールに追加(これで表示される)
-      canvas.Controls.Add(IDTextbox);
-      //MessageBox.Show(IDTextbox.Location.ToString());
+      canvas.Controls.Add(IDLabel);
     }
      
     public void toStream(StreamWriter sw) {
@@ -625,7 +627,7 @@ namespace WakuAndPiece {
 
     /* 色をランダムに生成 */
     private Brush randomBrush(Random rng) {
-      return new SolidBrush(Color.FromArgb(rng.Next(255), rng.Next(255), rng.Next(255)));
+      return new SolidBrush(Color.FromArgb(rng.Next(60, 255), rng.Next(60, 255), rng.Next(60, 255)));
     }
   }
 }
