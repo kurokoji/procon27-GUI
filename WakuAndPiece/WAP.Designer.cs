@@ -29,6 +29,7 @@
       this.canvas = new System.Windows.Forms.PictureBox();
       this.drawPiecesMove = new System.Windows.Forms.Button();
       this.textboxPanel = new System.Windows.Forms.Panel();
+      this.framePanel = new System.Windows.Forms.Panel();
       this.saveAns = new System.Windows.Forms.Button();
       this.oldProAns = new System.Windows.Forms.Button();
       this.pieceListpanel = new System.Windows.Forms.Panel();
@@ -92,11 +93,20 @@
       // 
       this.textboxPanel.BackColor = System.Drawing.Color.Transparent;
       this.textboxPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+      this.textboxPanel.Controls.Add(this.framePanel);
       this.textboxPanel.Controls.Add(this.canvas);
       this.textboxPanel.Location = new System.Drawing.Point(188, 52);
       this.textboxPanel.Name = "textboxPanel";
       this.textboxPanel.Size = new System.Drawing.Size(910, 514);
       this.textboxPanel.TabIndex = 6;
+      // 
+      // framePanel
+      // 
+      this.framePanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+      this.framePanel.Location = new System.Drawing.Point(529, 213);
+      this.framePanel.Name = "framePanel";
+      this.framePanel.Size = new System.Drawing.Size(380, 300);
+      this.framePanel.TabIndex = 5;
       // 
       // saveAns
       // 
@@ -163,6 +173,7 @@
     private System.Windows.Forms.Button saveAns;
     private System.Windows.Forms.Button oldProAns;
     private System.Windows.Forms.Panel pieceListpanel;
+    private System.Windows.Forms.Panel framePanel;
   }
 }
 

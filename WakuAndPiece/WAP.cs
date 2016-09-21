@@ -94,6 +94,7 @@ namespace WakuAndPiece {
         // リストへの描画
         problem.showpieceList(pieceListpanel);
       }
+      problem.framedraw(framePanel);
     }
     
     /* ソルバーにフレーム,ピース情報を出力 */
@@ -555,6 +556,26 @@ namespace WakuAndPiece {
         foreach (Polygon pol in pieces) {
           pol.draw(g, randomBrush(rng), canvas, new Vertex(-pol.getLeftMost() + SHOW_WIDTH, displace - pol.getTopMost()));
           displace += Math.Abs(pol.getTopMost() - pol.getBottomMost()) + SHOW_WIDTH;
+        }
+      }
+    }
+
+    // フレーム描画
+    public void framedraw(Panel panel) {
+      panel.AutoScroll = true;
+      PictureBox canvas = new PictureBox();
+      canvas.Size = panel.Size;
+      panel.Controls.Add(canvas);
+      canvas.Image = new Bitmap(canvas.Height, canvas.Width);
+      canvas.Location = new Point(0, 0);
+
+      using (Graphics g = Graphics.FromImage(canvas.Image)) {
+        g.SmoothingMode = SmoothingMode.AntiAlias;
+        Random rng = new Random();
+        foreach (Polygon pol in frame.holes) {
+          PointF[] points = pol.vertices.Select((x) => (x * 0.5).toPointF()).ToArray();
+          // 直線で描画
+          g.DrawPolygon(new Pen(Color.DarkBlue, 3), points);
         }
       }
     }
