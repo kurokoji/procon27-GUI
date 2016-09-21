@@ -191,17 +191,18 @@ namespace WakuAndPiece {
       ansOfd.RestoreDirectory = true;
 
       if (proOfd.ShowDialog() == DialogResult.OK) {
+        // 問題
+        using (StreamReader sr = new StreamReader(proOfd.OpenFile())) {
+          problem = Problem.fromStream(sr);
+        }
+        // リストへの描画
+        problem.showpieceList(pieceListpanel);
+        problem.framedraw(framePanel);
         if (ansOfd.ShowDialog() == DialogResult.OK) {
-          // 問題
-          using (StreamReader sr = new StreamReader(proOfd.OpenFile())) {
-            problem = Problem.fromStream(sr);
-          }
           // 解答
           using (StreamReader sr = new StreamReader(ansOfd.OpenFile())) {
             piecesMove = problem.readAnswerStream(sr);
           }
-          // リストへの描画
-          problem.showpieceList(pieceListpanel);
         }
       }
     }
