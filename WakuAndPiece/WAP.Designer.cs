@@ -75,7 +75,7 @@
       this.canvas.BackColor = System.Drawing.Color.Transparent;
       this.canvas.Location = new System.Drawing.Point(-1, -1);
       this.canvas.Name = "canvas";
-      this.canvas.Size = new System.Drawing.Size(910, 514);
+      this.canvas.Size = new System.Drawing.Size(1820, 1028);
       this.canvas.TabIndex = 4;
       this.canvas.TabStop = false;
       // 

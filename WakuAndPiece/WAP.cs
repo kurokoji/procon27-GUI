@@ -127,7 +127,7 @@ namespace WakuAndPiece {
 
     /* 描画 */
     private void drawPieces_Click(object sender, EventArgs e) {
-      canvas.Image = new Bitmap(canvas.Height, canvas.Width);
+      canvas.Image = new Bitmap(canvas.Width, canvas.Height);
       using (Graphics g = Graphics.FromImage(canvas.Image)) {
         // アンチエイリアス
         g.SmoothingMode = SmoothingMode.AntiAlias;
@@ -142,7 +142,7 @@ namespace WakuAndPiece {
 
     /* 動かした後の描画 */
     private void drawPiecesMove_Click(object sender, EventArgs e) {
-      canvas.Image = new Bitmap(canvas.Height, canvas.Width);
+      canvas.Image = new Bitmap(canvas.Width, canvas.Height);
       using (Graphics g = Graphics.FromImage(canvas.Image)) {
         // アンチエイリアス
         g.SmoothingMode = SmoothingMode.AntiAlias;
@@ -609,7 +609,7 @@ namespace WakuAndPiece {
       PictureBox canvas = new PictureBox();
       canvas.Size = panel.Size;
       panel.Controls.Add(canvas);
-      canvas.Image = new Bitmap(canvas.Height, canvas.Width);
+      canvas.Image = new Bitmap(canvas.Width, canvas.Height);
       canvas.Location = new Point(0, 0);
 
       using (Graphics g = Graphics.FromImage(canvas.Image)) {
