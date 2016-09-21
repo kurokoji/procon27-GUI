@@ -47,6 +47,8 @@ namespace WakuAndPiece {
 
     // ピースを表示
     private void showPiece() {
+      // ピースとピースの幅
+      const int SHOW_WIDTH = 30;
       canvas.Image = new Bitmap(canvas.Height, canvas.Width);
       using (Graphics g = Graphics.FromImage(canvas.Image)) {
         // アンチエイリアス
@@ -54,7 +56,7 @@ namespace WakuAndPiece {
         Random rng = new Random();
         // 子コントロールをclear
         canvas.Controls.Clear();
-        problem.missingPieces[0].draw(g, randomBrush(rng), canvas);
+        problem.missingPieces[0].draw(g, randomBrush(rng), canvas, new Vertex(-problem.missingPieces[0].getLeftMost() + SHOW_WIDTH, SHOW_WIDTH - problem.missingPieces[0].getTopMost()));
       }
     }
 
