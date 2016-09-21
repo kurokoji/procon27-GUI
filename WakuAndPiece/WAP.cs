@@ -348,7 +348,7 @@ namespace WakuAndPiece {
       // IDを表示するためのTextbox
       TextBox IDTextbox = new TextBox();
       IDTextbox.Font = new Font("Meiryo UI", 8);
-      IDTextbox.Location = (getGravity() * MAG).toPoint();
+      IDTextbox.Location = (vertices[0] * MAG).toPoint();
       IDTextbox.Text = ID.ToString();
       IDTextbox.Size = new Size(ID_WIDTH, ID_HEIGHT);
       // canvasの子コントロールに追加(これで表示される)
@@ -363,11 +363,12 @@ namespace WakuAndPiece {
       // IDを表示するためのTextbox
       TextBox IDTextbox = new TextBox();
       IDTextbox.Font = new Font("Meiryo UI", 8);
-      IDTextbox.Location = (getGravity() * MAG + (displace * MAG)).toPoint();
+      IDTextbox.Location = (vertices[0] * MAG + (displace * MAG)).toPoint();
       IDTextbox.Text = ID.ToString();
       IDTextbox.Size = new Size(ID_WIDTH, ID_HEIGHT);
       // canvasの子コントロールに追加(これで表示される)
       canvas.Controls.Add(IDTextbox);
+      //MessageBox.Show(IDTextbox.Location.ToString());
     }
      
     public void toStream(StreamWriter sw) {
