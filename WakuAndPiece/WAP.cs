@@ -80,12 +80,21 @@ namespace WakuAndPiece {
       ProcessStartInfo readQuestInfo = new ProcessStartInfo("scaller.exe");
       readQuestInfo.UseShellExecute = false;
       readQuestInfo.RedirectStandardOutput = true;
+      readQuestInfo.RedirectStandardError = false;
 
       // 読み込みプロセスの開始
       using (Process readQuestreader = Process.Start(readQuestInfo)) {
+        string text = readQuestreader.StandardOutput.ReadToEnd();
+        readQuestreader.WaitForExit();
         // フレーム,ピース情報を読み込む
-        problem = Problem.fromStream(readQuestreader.StandardOutput);
+        problem = Problem.fromStream(new StringReader(text));
       }
+      /*
+      using (TextReader tr = new StreamReader("sample_.txt")) {
+        problem = Problem.fromStream(tr);
+      }
+      */
+
       // ID被りがあったピースが1個以上あればID変更フォームを表示
       if (problem.missingPieces.Count > 0) {
         ChangeID changeid = new ChangeID(problem, pieceListpanel);
@@ -312,7 +321,7 @@ namespace WakuAndPiece {
     }
 
     // StreamReaderから読み込む
-    public static Polygon fromStream(StreamReader sr) {
+    public static Polygon fromStream(TextReader sr) {
       // 要素数を入力
       int N = int.Parse(sr.ReadLine());
       // 要素数分だけ確保
@@ -432,7 +441,7 @@ namespace WakuAndPiece {
     }
 
     // StreamReaderから読み込む
-    public static Frame fromStream(StreamReader sr) {
+    public static Frame fromStream(TextReader sr) {
       // 要素数の入力
       int N = int.Parse(sr.ReadLine());
       // 要素数分だけ確保
@@ -466,7 +475,7 @@ namespace WakuAndPiece {
       this.missingPieces = missingPieces;
     }
     // Streamから各情報を読み取る
-    public static Problem fromStream(StreamReader sr) {
+    public static Problem fromStream(TextReader sr) {
       Frame frame = Frame.fromStream(sr);
       // 要素数の入力
       int N = int.Parse(sr.ReadLine());
