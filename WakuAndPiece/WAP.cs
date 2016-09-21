@@ -35,6 +35,9 @@ namespace WakuAndPiece {
       this.state.problemChanged += (x) => {
         this.outputSolve.Enabled = x != null;
       };
+      this.state.problemChanged += (x) => {
+        listSwitchCombo.SelectedIndex = 0;
+      };
     }
     
     // 状態(変更があったか)を表すクラス
@@ -153,13 +156,14 @@ namespace WakuAndPiece {
     }
     /* 色をランダムに生成 */
     private Brush randomBrush(Random rng) {
-      return new SolidBrush(Color.FromArgb(rng.Next(255), rng.Next(255), rng.Next(255)));
+      return new SolidBrush(Color.FromArgb(rng.Next(60, 255), rng.Next(60, 255), rng.Next(60, 255)));
     }
 
     /* WakuAndPieceが読まれた際の処理(1度だけ) */
     private void WakuAndPiece_Load(object sender, EventArgs e) {
       this.textboxPanel.Controls.Add(canvas);
       this.canvas.Location = new Point(0, 0);
+      listSwitchCombo.DropDownStyle = ComboBoxStyle.DropDownList;
     }
 
     /* 解答の保存をする際のボタン */
@@ -214,6 +218,10 @@ namespace WakuAndPiece {
           }
         }
       }
+    }
+
+    private void listSwitchCombo_SelectedIndexChanged(object sender, EventArgs e) {
+      problem.showpieceList(pieceListpanel, listSwitchCombo.SelectedIndex);
     }
   }
 
@@ -290,34 +298,51 @@ namespace WakuAndPiece {
   // 図形(フレームの穴とピースに使われる)
   public class Polygon {
     // 重心の取得
-    // http://homepage1.nifty.com/gfk/polygon-G.htm
-    // http://d.hatena.ne.jp/n-trino/20141202
+    // http://www.biwako.shiga-u.ac.jp/sensei/mnaka/ut/polygonarea.html
     public Vertex getGravity() {
       double sumS = 0;
       double sumX = 0, sumY = 0;
       int N = vertices.Length;
 
       for (int i = 0; i < N; ++i) {
-        double s = (vertices[i % N].X * vertices[(i + 1) % N].Y - vertices[i % N].Y * vertices[(i + 1) % N].X) / 2;
-        Vertex g = (vertices[i % N] + vertices[(i + 1) % N]) / 3;
-        sumS += s;
-        sumX += s * g.X;
-        sumY += s * g.Y;
+        int j = (i + 1) % N;
+        Vertex g = vertices[j] - vertices[i];
+        double st = g.X * g.Y / 2;
+        Vertex ss = new Vertex(g.X * vertices[i].Y, g.Y * vertices[i].X);
+        Vertex gt = new Vertex(vertices[j].X - g.X / 3, vertices[j].Y - g.Y / 3);
+        Vertex gs = new Vertex(vertices[j].X - g.X / 2, vertices[j].Y - g.Y / 2);
+        sumX += st * gt.X + ss.X * gs.X;
+        sumY += st * gt.Y + ss.Y * gs.Y;
+        sumS += st + ss.X;
       }
-      return new Vertex(sumX, sumY) / Math.Abs(sumS);
+      return new Vertex(sumX, -sumY) / Math.Abs(sumS);
+    }
+
+    // 面積の取得
+    private double getArea() {
+      double sumS = 0;
+      int N = vertices.Length;
+
+      for (int i = 0; i < N; ++i) {
+        double s = (vertices[i % N].X * vertices[(i + 1) % N].Y - vertices[i % N].Y * vertices[(i + 1) % N].X) / 2;
+        sumS += s;
+      }
+      return sumS;
     }
 
     public Vertex[] vertices { get; }
     public int ID { get; set; }
-
+    public double area { get; }
     // Vertexクラスをセットするコンストラクタ
     public Polygon(Vertex[] vertices) {
       this.vertices = vertices;
+      area = getArea();
     }
 
     public Polygon(Vertex[] vertices, int ID) {
       this.vertices = vertices;
       this.ID = ID;
+      area = getArea();
     }
 
     // StreamReaderから読み込む
@@ -536,7 +561,7 @@ namespace WakuAndPiece {
     }
     
     // ピースリストへの描画
-    public void showpieceList(Panel listPanel) {
+    public void showpieceList(Panel listPanel, int swi = 0) {
       // listPanelの子コントロールをクリア
       listPanel.Controls.Clear();
       // ピースとピースの幅
@@ -560,8 +585,17 @@ namespace WakuAndPiece {
         Random rng = new Random();
         // 原点からどれだけずらすか
         double displace = SHOW_WIDTH;
+        // ピースの表示順を指定
+        List<Piece> res = new List<Piece>(pieces);
+        if (swi == 1) {
+          res.Reverse();
+        } else if (swi == 2) {
+          res.Sort((a, b) => -(int)(a.area - b.area));
+        } else if (swi == 3) {
+          res.Sort((a, b) => (int)(a.area - b.area));
+        }
         // 描画
-        foreach (Polygon pol in pieces) {
+        foreach (Polygon pol in res) {
           pol.draw(g, randomBrush(rng), canvas, new Vertex(-pol.getLeftMost() + SHOW_WIDTH, displace - pol.getTopMost()));
           displace += Math.Abs(pol.getTopMost() - pol.getBottomMost()) + SHOW_WIDTH;
         }

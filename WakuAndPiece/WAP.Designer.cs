@@ -33,6 +33,7 @@
       this.saveAns = new System.Windows.Forms.Button();
       this.oldProAns = new System.Windows.Forms.Button();
       this.pieceListpanel = new System.Windows.Forms.Panel();
+      this.listSwitchCombo = new System.Windows.Forms.ComboBox();
       ((System.ComponentModel.ISupportInitialize)(this.canvas)).BeginInit();
       this.textboxPanel.SuspendLayout();
       this.SuspendLayout();
@@ -91,9 +92,9 @@
       // 
       // textboxPanel
       // 
+      this.textboxPanel.AutoScroll = true;
       this.textboxPanel.BackColor = System.Drawing.Color.Transparent;
       this.textboxPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-      this.textboxPanel.Controls.Add(this.framePanel);
       this.textboxPanel.Controls.Add(this.canvas);
       this.textboxPanel.Location = new System.Drawing.Point(188, 52);
       this.textboxPanel.Name = "textboxPanel";
@@ -103,7 +104,7 @@
       // framePanel
       // 
       this.framePanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-      this.framePanel.Location = new System.Drawing.Point(529, 213);
+      this.framePanel.Location = new System.Drawing.Point(701, 52);
       this.framePanel.Name = "framePanel";
       this.framePanel.Size = new System.Drawing.Size(380, 300);
       this.framePanel.TabIndex = 5;
@@ -137,11 +138,28 @@
       this.pieceListpanel.Size = new System.Drawing.Size(220, 514);
       this.pieceListpanel.TabIndex = 9;
       // 
+      // listSwitchCombo
+      // 
+      this.listSwitchCombo.Font = new System.Drawing.Font("Meiryo UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+      this.listSwitchCombo.FormattingEnabled = true;
+      this.listSwitchCombo.Items.AddRange(new object[] {
+            "ID昇順",
+            "ID降順",
+            "面積昇順",
+            "面積降順"});
+      this.listSwitchCombo.Location = new System.Drawing.Point(1118, 23);
+      this.listSwitchCombo.Name = "listSwitchCombo";
+      this.listSwitchCombo.Size = new System.Drawing.Size(121, 25);
+      this.listSwitchCombo.TabIndex = 11;
+      this.listSwitchCombo.SelectedIndexChanged += new System.EventHandler(this.listSwitchCombo_SelectedIndexChanged);
+      // 
       // WakuAndPiece
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.ClientSize = new System.Drawing.Size(1350, 729);
+      this.Controls.Add(this.framePanel);
+      this.Controls.Add(this.listSwitchCombo);
       this.Controls.Add(this.pieceListpanel);
       this.Controls.Add(this.oldProAns);
       this.Controls.Add(this.saveAns);
@@ -174,6 +192,7 @@
     private System.Windows.Forms.Button oldProAns;
     private System.Windows.Forms.Panel pieceListpanel;
     private System.Windows.Forms.Panel framePanel;
+    private System.Windows.Forms.ComboBox listSwitchCombo;
   }
 }
 
