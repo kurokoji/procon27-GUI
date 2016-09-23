@@ -362,7 +362,7 @@ namespace WakuAndPiece {
       return new Polygon(vertices);
     }
 
-    const int ID_WIDTH = 30;
+    const int ID_WIDTH = 70;
     const int ID_HEIGHT = 20;
     Vertex LABEL_GAP { get; } = new Vertex(10, 10);
     // 表示倍率
@@ -393,7 +393,7 @@ namespace WakuAndPiece {
       IDLabel.BackColor = Color.Transparent;
       IDLabel.Font = new Font("Meiryo UI", 8);
       IDLabel.Location = ((getGravity() - LABEL_GAP) * MAG + (displace * MAG)).toPoint();
-      IDLabel.Text = ID.ToString();
+      IDLabel.Text = ID.ToString() + "(" + vertices.Length.ToString() + ")";
       IDLabel.Size = new Size(ID_WIDTH, ID_HEIGHT);
       // canvasの子コントロールに追加(これで表示される)
       canvas.Controls.Add(IDLabel);
@@ -595,7 +595,12 @@ namespace WakuAndPiece {
           res.Sort((a, b) => -(int)(a.area - b.area));
         } else if (swi == 3) {
           res.Sort((a, b) => (int)(a.area - b.area));
+        } else if (swi == 4) {
+          res.Sort((a, b) => (a.vertices.Length - b.vertices.Length));
+        } else if (swi == 5) {
+          res.Sort((a, b) => -(a.vertices.Length - b.vertices.Length));
         }
+
         // 描画
         foreach (Polygon pol in res) {
           pol.draw(g, randomBrush(rng), canvas, new Vertex(-pol.getLeftMost() + SHOW_WIDTH, displace - pol.getTopMost()));

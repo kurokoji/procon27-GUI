@@ -132,6 +132,7 @@
       // 
       // pieceListpanel
       // 
+      this.pieceListpanel.AutoScroll = true;
       this.pieceListpanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
       this.pieceListpanel.Location = new System.Drawing.Point(1118, 52);
       this.pieceListpanel.Name = "pieceListpanel";
@@ -146,7 +147,9 @@
             "ID昇順",
             "ID降順",
             "面積昇順",
-            "面積降順"});
+            "面積降順",
+            "頂点数昇順",
+            "頂点数降順"});
       this.listSwitchCombo.Location = new System.Drawing.Point(1118, 23);
       this.listSwitchCombo.Name = "listSwitchCombo";
       this.listSwitchCombo.Size = new System.Drawing.Size(121, 25);
