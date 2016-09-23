@@ -609,6 +609,7 @@ namespace WakuAndPiece {
 
     // フレーム描画
     public void framedraw(Panel panel) {
+      panel.Controls.Clear();
       panel.AutoScroll = true;
       PictureBox canvas = new PictureBox();
       canvas.Size = panel.Size;
