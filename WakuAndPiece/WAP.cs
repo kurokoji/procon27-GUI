@@ -572,11 +572,8 @@ namespace WakuAndPiece {
       // 一番右にある点のX座標とピース自体の幅を取得
       double canvas_width = pieces.Max(x => x.getRightMost());
       double canvas_height = pieces.Select(x => Math.Abs(x.getTopMost() - x.getBottomMost())).Sum();
-      // PanelよりPictureBoxが大きくなったらスクロールバーを表示
-      listPanel.AutoScroll = true;
       PictureBox canvas = new PictureBox();
-      // 余裕をもって大きさを二倍取る
-      canvas.Size = new Size((int)canvas_width, (int)canvas_height + SHOW_WIDTH * pieces.Length);
+      canvas.Size = new Size((int)canvas_width / 2, ((int)canvas_height + SHOW_WIDTH * pieces.Length) / 2);
       canvas.Image = new Bitmap(canvas.Width, canvas.Height);
       listPanel.Controls.Add(canvas);
       canvas.Location = new Point(0, 0);
