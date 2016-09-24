@@ -593,13 +593,13 @@ namespace WakuAndPiece {
         if (swi == 1) {
           res.Reverse();
         } else if (swi == 2) {
-          res.Sort((a, b) => -(int)(a.area - b.area));
+          res.Sort((a, b) => b.area.CompareTo(a.area));
         } else if (swi == 3) {
-          res.Sort((a, b) => (int)(a.area - b.area));
+          res.Sort((a, b) => a.area.CompareTo(b.area));
         } else if (swi == 4) {
-          res.Sort((a, b) => (a.vertices.Length - b.vertices.Length));
+          res.Sort((a, b) => a.vertices.Length.CompareTo(b.vertices.Length));
         } else if (swi == 5) {
-          res.Sort((a, b) => -(a.vertices.Length - b.vertices.Length));
+          res.Sort((a, b) => b.vertices.Length.CompareTo(a.vertices.Length));
         }
 
         // 描画
