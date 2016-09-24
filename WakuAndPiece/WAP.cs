@@ -359,8 +359,8 @@ namespace WakuAndPiece {
       return new Polygon(vertices);
     }
 
-    const int ID_WIDTH = 70;
-    const int ID_HEIGHT = 20;
+    //const int ID_WIDTH = 70;
+    //const int ID_HEIGHT = 20;
     Vertex LABEL_GAP { get; } = new Vertex(10, 10);
     // 表示倍率
     const double MAG = 0.5;
@@ -375,7 +375,8 @@ namespace WakuAndPiece {
       IDLabel.Font = new Font("Meiryo UI", 8);
       IDLabel.Location = ((getGravity() - LABEL_GAP) * MAG).toPoint();
       IDLabel.Text = ID.ToString();
-      IDLabel.Size = new Size(ID_WIDTH, ID_HEIGHT);
+      //IDLabel.Size = new Size(ID_WIDTH, ID_HEIGHT);
+      IDLabel.AutoSize = true;
       // canvasの子コントロールに追加(これで表示される)
       canvas.Controls.Add(IDLabel);
     }
@@ -391,7 +392,8 @@ namespace WakuAndPiece {
       IDLabel.Font = new Font("Meiryo UI", 8);
       IDLabel.Location = ((getGravity() - LABEL_GAP) * MAG + (displace * MAG)).toPoint();
       IDLabel.Text = ID.ToString() + "(" + vertices.Length.ToString() + ")";
-      IDLabel.Size = new Size(ID_WIDTH, ID_HEIGHT);
+      //IDLabel.Size = new Size(ID_WIDTH, ID_HEIGHT);
+      IDLabel.AutoSize = true;
       // canvasの子コントロールに追加(これで表示される)
       canvas.Controls.Add(IDLabel);
     }
