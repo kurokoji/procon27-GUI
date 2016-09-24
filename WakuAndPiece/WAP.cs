@@ -131,11 +131,10 @@ namespace WakuAndPiece {
       using (Graphics g = Graphics.FromImage(canvas.Image)) {
         // アンチエイリアス
         g.SmoothingMode = SmoothingMode.AntiAlias;
-        Random rng = new Random();
         // 子コントロールをclear
         canvas.Controls.Clear();
         foreach (Polygon pol in problem.pieces) {
-          pol.draw(g, randomBrush(rng), canvas);
+          pol.draw(g, pol.brush, canvas);
         }      
       }
     }
@@ -146,17 +145,12 @@ namespace WakuAndPiece {
       using (Graphics g = Graphics.FromImage(canvas.Image)) {
         // アンチエイリアス
         g.SmoothingMode = SmoothingMode.AntiAlias;
-        Random rng = new Random();
         // 子コントロールをclear
         canvas.Controls.Clear();
         foreach (PieceMove pmv in piecesMove) {
-          pmv.draw(g, randomBrush(rng), canvas);
+          pmv.draw(g, pmv.piece.brush, canvas);
         }
       }
-    }
-    /* 色をランダムに生成 */
-    private Brush randomBrush(Random rng) {
-      return new SolidBrush(Color.FromArgb(rng.Next(60, 255), rng.Next(60, 255), rng.Next(60, 255)));
     }
 
     /* WakuAndPieceが読まれた際の処理(1度だけ) */
@@ -333,15 +327,18 @@ namespace WakuAndPiece {
     public Vertex[] vertices { get; }
     public int ID { get; set; }
     public double area { get; }
+    public Brush brush { get; }
+
     // Vertexクラスをセットするコンストラクタ
     public Polygon(Vertex[] vertices) {
       this.vertices = vertices;
       area = getArea();
     }
 
-    public Polygon(Vertex[] vertices, int ID) {
+    public Polygon(Vertex[] vertices, int ID, Brush brush) {
       this.vertices = vertices;
       this.ID = ID;
+      this.brush = brush;
       area = getArea();
     }
 
@@ -413,7 +410,7 @@ namespace WakuAndPiece {
       Vertex origin = this.vertices[origin_id];
       Vertex[] rotated = this.vertices.Select((x) => x.rotate(origin, rad)).ToArray();
       // 回転後のPolygonを返す
-      return new Polygon(rotated, this.ID);
+      return new Polygon(rotated, this.ID, this.brush);
     }
 
     // 平行移動
@@ -421,7 +418,7 @@ namespace WakuAndPiece {
       Vertex offset = new Vertex(X, Y);
       Vertex[] moved = this.vertices.Select((x) => x + offset).ToArray();
       // 移動後のPolygonを返す
-      return new Polygon(moved, this.ID);
+      return new Polygon(moved, this.ID, this.brush);
     }
 
     // 最も左にある座標のX座標の取得
@@ -522,13 +519,14 @@ namespace WakuAndPiece {
         int inputID = int.Parse(sr.ReadLine());
         pieces[inputID].Add(Piece.fromStream(sr));
       }
+      Random rng = new Random();
       // 被りがあればmissingPiecesにAdd
       for (int i = 0; i < N; i++) {
         if (pieces[i].Count == 1) {
-          respieces[i] = new Piece(pieces[i][0].vertices, i);
+          respieces[i] = new Piece(pieces[i][0].vertices, i, randomBrush(rng));
         } else {
           foreach (Piece piece in pieces[i]) {
-            missingPieces.Add(new Piece(piece.vertices, i));
+            missingPieces.Add(new Piece(piece.vertices, i, randomBrush(rng)));
           }
         }
       }
@@ -600,7 +598,7 @@ namespace WakuAndPiece {
 
         // 描画
         foreach (Polygon pol in res) {
-          pol.draw(g, randomBrush(rng), canvas, new Vertex(-pol.getLeftMost() + SHOW_WIDTH, displace - pol.getTopMost()));
+          pol.draw(g, pol.brush, canvas, new Vertex(-pol.getLeftMost() + SHOW_WIDTH, displace - pol.getTopMost()));
           displace += Math.Abs(pol.getTopMost() - pol.getBottomMost()) + SHOW_WIDTH;
         }
       }
@@ -629,8 +627,8 @@ namespace WakuAndPiece {
     }
 
     /* 色をランダムに生成 */
-    private Brush randomBrush(Random rng) {
-      return new SolidBrush(Color.FromArgb(rng.Next(60, 255), rng.Next(60, 255), rng.Next(60, 255)));
+    private static Brush randomBrush(Random rng) {
+      return new SolidBrush(Color.FromArgb(rng.Next(90, 255), rng.Next(90, 255), rng.Next(90, 255)));
     }
   }
 }

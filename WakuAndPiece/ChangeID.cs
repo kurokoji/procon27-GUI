@@ -56,7 +56,7 @@ namespace WakuAndPiece {
         Random rng = new Random();
         // 子コントロールをclear
         canvas.Controls.Clear();
-        problem.missingPieces[0].draw(g, randomBrush(rng), canvas, new Vertex(-problem.missingPieces[0].getLeftMost() + SHOW_WIDTH, SHOW_WIDTH - problem.missingPieces[0].getTopMost()));
+        problem.missingPieces[0].draw(g, problem.missingPieces[0].brush, canvas, new Vertex(-problem.missingPieces[0].getLeftMost() + SHOW_WIDTH, SHOW_WIDTH - problem.missingPieces[0].getTopMost()));
       }
     }
 
@@ -88,7 +88,7 @@ namespace WakuAndPiece {
         return;
       }
 
-      problem.pieces[N] = new Piece(problem.missingPieces[0].vertices, N);
+      problem.pieces[N] = new Piece(problem.missingPieces[0].vertices, N, problem.missingPieces[0].brush);
       // 先頭を削除
       problem.missingPieces.RemoveAt(0);
       // 修正すべきピースが無くなったら閉じる
