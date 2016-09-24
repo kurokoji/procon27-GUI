@@ -573,7 +573,7 @@ namespace WakuAndPiece {
       double canvas_width = pieces.Max(x => x.getRightMost());
       double canvas_height = pieces.Select(x => Math.Abs(x.getTopMost() - x.getBottomMost())).Sum();
       PictureBox canvas = new PictureBox();
-      canvas.Size = new Size((int)canvas_width / 2, ((int)canvas_height + SHOW_WIDTH * pieces.Length) / 2);
+      canvas.Size = new Size((int)canvas_width / 2, ((int)canvas_height + SHOW_WIDTH * (pieces.Length + 1)) / 2);
       canvas.Image = new Bitmap(canvas.Width, canvas.Height);
       listPanel.Controls.Add(canvas);
       canvas.Location = new Point(0, 0);
