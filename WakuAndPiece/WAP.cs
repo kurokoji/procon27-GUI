@@ -368,6 +368,10 @@ namespace WakuAndPiece {
     public void draw(Graphics g, Brush brush, PictureBox canvas) {
       PointF[] points = this.vertices.Select((x) => (x * MAG).toPointF()).ToArray();
       g.FillPolygon(brush, points);
+      // 頂点の描画
+      foreach (PointF p in points) {
+        g.DrawEllipse(new Pen(Color.Red, 2), p.X, p.Y, 2, 2);
+      }
 
       // IDを表示するためのTextbox
       Label IDLabel = new Label();
