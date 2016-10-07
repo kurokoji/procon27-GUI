@@ -80,23 +80,38 @@ namespace WakuAndPiece {
 
     /* フレーム,ピース情報の読み込み */
     private void readFramePiece_Click(object sender, EventArgs e) {
-      ProcessStartInfo readQuestInfo = new ProcessStartInfo("scaller.exe");
+      //ProcessStartInfo readQuestInfo = new ProcessStartInfo("scaller.exe");
+      string command = @"/c python C:\Users\mi151309\Dropbox\kurokoji\procon27dev\pyscaller\performance\make_data.py ";
+      ProcessStartInfo readQuestInfo = new ProcessStartInfo("cmd.exe");
       readQuestInfo.UseShellExecute = false;
       readQuestInfo.RedirectStandardOutput = true;
-      readQuestInfo.RedirectStandardError = false;
+      readQuestInfo.RedirectStandardError = true;
+
+      OpenFileDialog ofd = new OpenFileDialog();
+      ofd.Filter = String.Format("{0}ファイル(*.{0})|*.{0}|すべてのファイル(*.*)|*.*", "jpg");
+      ofd.Multiselect = true;
+      ofd.RestoreDirectory = true;
+      if (ofd.ShowDialog() != DialogResult.OK) {
+        return;
+      }
+      var path_params = string.Join(" ", ofd.FileNames.Select(Path.GetFullPath));
+      command += path_params;
+
+      readQuestInfo.Arguments = command;
 
       // 読み込みプロセスの開始
       using (Process readQuestreader = Process.Start(readQuestInfo)) {
-        string text = readQuestreader.StandardOutput.ReadToEnd();
+        string err = readQuestreader.StandardError.ReadToEnd();
+        string output = readQuestreader.StandardOutput.ReadToEnd();
         readQuestreader.WaitForExit();
         // フレーム,ピース情報を読み込む
-        problem = Problem.fromStream(new StringReader(text));
+        try {
+          problem = Problem.fromStream(new StringReader(output));
+        }
+        catch (Exception exc) {
+          MessageBox.Show(err + "::\n" + exc.ToString(), "[Error]");
+        }
       }
-      /*
-      using (TextReader tr = new StreamReader("sample_.txt")) {
-        problem = Problem.fromStream(tr);
-      }
-      */
 
       // ID被りがあったピースが1個以上あればID変更フォームを表示
       if (problem.missingPieces.Count > 0) {
@@ -107,12 +122,13 @@ namespace WakuAndPiece {
         problem.showpieceList(pieceListpanel);
       }
       problem.framedraw(framePanel);
+      problemState.Text = "全ピース数: " + problem.pieces.Length + "枚";
     }
     
     /* ソルバーにフレーム,ピース情報を出力 */
     private void outputSolve_Click(object sender, EventArgs e) {
 
-      ProcessStartInfo processInfo = new ProcessStartInfo("solver.exe");
+      ProcessStartInfo processInfo = new ProcessStartInfo(@"C:\Users\mi151309\Dropbox\kurokoji\procon27dev\osolver\build\solver.exe");
       processInfo.UseShellExecute = false;
       processInfo.RedirectStandardInput = true;
       processInfo.RedirectStandardOutput = true;
@@ -121,7 +137,9 @@ namespace WakuAndPiece {
         // フレーム,ピース情報を書き込む
         problem.toStream(processSolver.StandardInput);
         processSolver.StandardInput.Flush();
-        piecesMove = problem.readAnswerStream(processSolver.StandardOutput);
+        string text = processSolver.StandardOutput.ReadToEnd();
+        processSolver.WaitForExit();
+        piecesMove = problem.readAnswerStream(new StringReader(text));
       }
     }
 
@@ -151,6 +169,7 @@ namespace WakuAndPiece {
           pmv.draw(g, pmv.piece.brush, canvas);
         }
       }
+      problemState.Text = "全ピース数: " + problem.pieces.Length + "枚" + "\n使ったピース: " + piecesMove.Length + "枚";
     }
 
     /* WakuAndPieceが読まれた際の処理(1度だけ) */
@@ -178,6 +197,7 @@ namespace WakuAndPiece {
       using (StreamWriter sw = new StreamWriter(answerFileName)) {
         sw.WriteLine(piecesMove.Length);
         foreach (PieceMove pm in piecesMove) {
+          sw.WriteLine(pm.ID);
           pm.toStream(sw);
         }
       }
@@ -205,9 +225,10 @@ namespace WakuAndPiece {
         // リストへの描画
         problem.showpieceList(pieceListpanel);
         problem.framedraw(framePanel);
+        problemState.Text = "全ピース数: " + problem.pieces.Length + "枚";
         if (ansOfd.ShowDialog() == DialogResult.OK) {
           // 解答
-          using (StreamReader sr = new StreamReader(ansOfd.OpenFile())) {
+          using (TextReader sr = new StreamReader(ansOfd.OpenFile())) {
             piecesMove = problem.readAnswerStream(sr);
           }
         }
@@ -267,31 +288,44 @@ namespace WakuAndPiece {
   // 動かすピース情報
   public class PieceMove {
     public Piece piece { get; }
-    public double X { get; }   // X方向に動かす分
-    public double Y { get; }   // Y方向に動かす分
-    public double rad { get; } // 回転させる角度
-
+    public int ID { get; }
+    //public double X { get; }   // X方向に動かす分
+    //public double Y { get; }   // Y方向に動かす分
+    //public double rad { get; } // 回転させる角度
+    /*
     public PieceMove(double x, double y, double rad, Piece piece) {
       X = x;
       Y = y;
       this.rad = rad;
       this.piece = piece;
     }
+    */
+    public PieceMove(int id, Piece piece) {
+      ID = id;
+      this.piece = piece;
+    }
 
     // 描画
     public void draw(Graphics g, Brush brush, PictureBox canvas) {
-      piece.rotate(rad).move(X, Y).draw(g, brush, canvas);
+      piece.draw(g, brush, canvas);
     }
-
+    /*
     // 解答の出力
     public void toStream(StreamWriter sw) {
       sw.WriteLine("{0} {1} {2} {3}", piece.ID, X, Y, rad);
+    }
+    */
+    public void toStream(StreamWriter sw) {
+      sw.WriteLine(piece.vertices.Length);
+      for (int i = 0; i < piece.vertices.Length; ++i) {
+        sw.WriteLine("{0} {1}", piece.vertices[i].X, piece.vertices[i].Y);
+      }
     }
   }
 
   // 図形(フレームの穴とピースに使われる)
   public class Polygon {
-    // 重心の取得
+    // 重心の取得(右回り)
     // http://www.biwako.shiga-u.ac.jp/sensei/mnaka/ut/polygonarea.html
     public Vertex getGravity() {
       double sumS = 0;
@@ -369,9 +403,10 @@ namespace WakuAndPiece {
       PointF[] points = this.vertices.Select((x) => (x * MAG).toPointF()).ToArray();
       g.FillPolygon(brush, points);
       // 頂点の描画
+      /*
       foreach (PointF p in points) {
         g.DrawEllipse(new Pen(Color.Red, 2), p.X, p.Y, 2, 2);
-      }
+      }*/
 
       // IDを表示するためのTextbox
       Label IDLabel = new Label();
@@ -546,22 +581,31 @@ namespace WakuAndPiece {
       // ピースの数を出力
       sw.WriteLine(pieces.Length);
       foreach (Piece piece in pieces) {
+        sw.WriteLine(piece.ID);
         piece.toStream(sw);
       }
     }
 
     // 解答を読み込む
-    public PieceMove[] readAnswerStream(StreamReader sr) {
+    public PieceMove[] readAnswerStream(TextReader sr) {
       int N = int.Parse(sr.ReadLine());
       PieceMove[] piecesMove = new PieceMove[N];
-      for (int i = 0; i < N; i++) {
-        string[] tokens = sr.ReadLine().Split(' ');
-        int id = int.Parse(tokens[0]);
-        double x = double.Parse(tokens[1]);
-        double y = double.Parse(tokens[2]);
-        double rad = double.Parse(tokens[3]);
-
-        piecesMove[i] = new PieceMove(x, y, rad, pieces[id]);
+      for (int i = 0; i < N; ++i) {
+        /*        string[] tokens = sr.ReadLine().Split(' ');
+                int id = int.Parse(tokens[0]);
+                double x = double.Parse(tokens[1]);
+                double y = double.Parse(tokens[2]);
+                double rad = double.Parse(tokens[3]);
+        */
+        int id = int.Parse(sr.ReadLine());
+        int M = int.Parse(sr.ReadLine());
+        Vertex[] vertices = new Vertex[M];
+        for (int j = 0; j < M; ++j) {
+          string[] tokens = sr.ReadLine().Split(' ');
+          vertices[j] = new Vertex(double.Parse(tokens[0]), double.Parse(tokens[1]));
+        }
+        //piecesMove[i] = new PieceMove(x, y, rad, pieces[id]);
+        piecesMove[i] = new PieceMove(id, new Piece(vertices, id, pieces[id].brush));
       }
       return piecesMove;
     }
@@ -613,10 +657,16 @@ namespace WakuAndPiece {
 
     // フレーム描画
     public void framedraw(Panel panel) {
+      const int SHOW_WIDTH = 50;
+      // フレーム位置調整
+      // ラムダ式書きまくりおじさん
+      Frame orgframe = new Frame(frame.holes.Select(x => new Piece(x.vertices.Select(t => t - new Vertex(x.getLeftMost() - SHOW_WIDTH, x.getTopMost() - SHOW_WIDTH)).ToArray())).ToArray());
+      double canvas_width = orgframe.holes.Select((x) => x.getRightMost()).Max();
+      double canvas_height = orgframe.holes.Select((x) => x.getBottomMost()).Max();
       panel.Controls.Clear();
       panel.AutoScroll = true;
       PictureBox canvas = new PictureBox();
-      canvas.Size = panel.Size;
+      canvas.Size = new Size((int)canvas_width, (int)canvas_height);
       panel.Controls.Add(canvas);
       canvas.Image = new Bitmap(canvas.Width, canvas.Height);
       canvas.Location = new Point(0, 0);
@@ -624,10 +674,14 @@ namespace WakuAndPiece {
       using (Graphics g = Graphics.FromImage(canvas.Image)) {
         g.SmoothingMode = SmoothingMode.AntiAlias;
         Random rng = new Random();
-        foreach (Polygon pol in frame.holes) {
+        foreach (Polygon pol in orgframe.holes) {
           PointF[] points = pol.vertices.Select((x) => (x * 0.5).toPointF()).ToArray();
           // 直線で描画
           g.DrawPolygon(new Pen(Color.DarkBlue, 3), points);
+          // 頂点の描画
+          foreach (PointF p in points) {
+            g.DrawEllipse(new Pen(Color.Red, 2), p.X, p.Y, 2, 2);
+          }
         }
       }
     }
