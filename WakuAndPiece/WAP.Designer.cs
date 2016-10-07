@@ -34,6 +34,7 @@
       this.oldProAns = new System.Windows.Forms.Button();
       this.pieceListpanel = new System.Windows.Forms.Panel();
       this.listSwitchCombo = new System.Windows.Forms.ComboBox();
+      this.problemState = new System.Windows.Forms.Label();
       ((System.ComponentModel.ISupportInitialize)(this.canvas)).BeginInit();
       this.textboxPanel.SuspendLayout();
       this.SuspendLayout();
@@ -156,11 +157,22 @@
       this.listSwitchCombo.TabIndex = 11;
       this.listSwitchCombo.SelectedIndexChanged += new System.EventHandler(this.listSwitchCombo_SelectedIndexChanged);
       // 
+      // problemState
+      // 
+      this.problemState.AutoSize = true;
+      this.problemState.BackColor = System.Drawing.Color.Transparent;
+      this.problemState.Font = new System.Drawing.Font("Meiryo UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+      this.problemState.Location = new System.Drawing.Point(185, 14);
+      this.problemState.Name = "problemState";
+      this.problemState.Size = new System.Drawing.Size(0, 17);
+      this.problemState.TabIndex = 12;
+      // 
       // WakuAndPiece
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.ClientSize = new System.Drawing.Size(1350, 729);
+      this.ClientSize = new System.Drawing.Size(1192, 654);
+      this.Controls.Add(this.problemState);
       this.Controls.Add(this.framePanel);
       this.Controls.Add(this.listSwitchCombo);
       this.Controls.Add(this.pieceListpanel);
@@ -180,6 +192,7 @@
       ((System.ComponentModel.ISupportInitialize)(this.canvas)).EndInit();
       this.textboxPanel.ResumeLayout(false);
       this.ResumeLayout(false);
+      this.PerformLayout();
 
     }
 
@@ -196,6 +209,7 @@
     private System.Windows.Forms.Panel pieceListpanel;
     private System.Windows.Forms.Panel framePanel;
     private System.Windows.Forms.ComboBox listSwitchCombo;
+    private System.Windows.Forms.Label problemState;
   }
 }
 
