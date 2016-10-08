@@ -35,14 +35,22 @@
       this.pieceListpanel = new System.Windows.Forms.Panel();
       this.listSwitchCombo = new System.Windows.Forms.ComboBox();
       this.problemState = new System.Windows.Forms.Label();
+      this.beamWidth = new System.Windows.Forms.NumericUpDown();
+      this.readPieces = new System.Windows.Forms.Button();
+      this.readFrame = new System.Windows.Forms.Button();
+      this.frameparam2 = new System.Windows.Forms.NumericUpDown();
+      this.frameparam1 = new System.Windows.Forms.NumericUpDown();
       ((System.ComponentModel.ISupportInitialize)(this.canvas)).BeginInit();
       this.textboxPanel.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.beamWidth)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.frameparam2)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.frameparam1)).BeginInit();
       this.SuspendLayout();
       // 
       // drawPieces
       // 
       this.drawPieces.Enabled = false;
-      this.drawPieces.Location = new System.Drawing.Point(36, 164);
+      this.drawPieces.Location = new System.Drawing.Point(36, 308);
       this.drawPieces.Name = "drawPieces";
       this.drawPieces.Size = new System.Drawing.Size(110, 33);
       this.drawPieces.TabIndex = 3;
@@ -52,18 +60,19 @@
       // 
       // readFramePiece
       // 
+      this.readFramePiece.Enabled = false;
       this.readFramePiece.Location = new System.Drawing.Point(36, 52);
       this.readFramePiece.Name = "readFramePiece";
       this.readFramePiece.Size = new System.Drawing.Size(110, 33);
       this.readFramePiece.TabIndex = 0;
-      this.readFramePiece.Text = "読み込み";
+      this.readFramePiece.Text = "一括読み込み";
       this.readFramePiece.UseVisualStyleBackColor = true;
       this.readFramePiece.Click += new System.EventHandler(this.readFramePiece_Click);
       // 
       // outputSolve
       // 
       this.outputSolve.Enabled = false;
-      this.outputSolve.Location = new System.Drawing.Point(36, 108);
+      this.outputSolve.Location = new System.Drawing.Point(36, 256);
       this.outputSolve.Name = "outputSolve";
       this.outputSolve.Size = new System.Drawing.Size(110, 33);
       this.outputSolve.TabIndex = 1;
@@ -83,7 +92,7 @@
       // drawPiecesMove
       // 
       this.drawPiecesMove.Enabled = false;
-      this.drawPiecesMove.Location = new System.Drawing.Point(36, 220);
+      this.drawPiecesMove.Location = new System.Drawing.Point(36, 360);
       this.drawPiecesMove.Name = "drawPiecesMove";
       this.drawPiecesMove.Size = new System.Drawing.Size(110, 34);
       this.drawPiecesMove.TabIndex = 5;
@@ -113,7 +122,7 @@
       // saveAns
       // 
       this.saveAns.Enabled = false;
-      this.saveAns.Location = new System.Drawing.Point(36, 272);
+      this.saveAns.Location = new System.Drawing.Point(36, 413);
       this.saveAns.Name = "saveAns";
       this.saveAns.Size = new System.Drawing.Size(110, 33);
       this.saveAns.TabIndex = 7;
@@ -123,7 +132,7 @@
       // 
       // oldProAns
       // 
-      this.oldProAns.Location = new System.Drawing.Point(36, 321);
+      this.oldProAns.Location = new System.Drawing.Point(36, 465);
       this.oldProAns.Name = "oldProAns";
       this.oldProAns.Size = new System.Drawing.Size(110, 33);
       this.oldProAns.TabIndex = 8;
@@ -167,11 +176,89 @@
       this.problemState.Size = new System.Drawing.Size(0, 17);
       this.problemState.TabIndex = 12;
       // 
+      // beamWidth
+      // 
+      this.beamWidth.Location = new System.Drawing.Point(36, 526);
+      this.beamWidth.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+      this.beamWidth.Name = "beamWidth";
+      this.beamWidth.Size = new System.Drawing.Size(110, 23);
+      this.beamWidth.TabIndex = 13;
+      this.beamWidth.Value = new decimal(new int[] {
+            30,
+            0,
+            0,
+            0});
+      // 
+      // readPieces
+      // 
+      this.readPieces.Location = new System.Drawing.Point(36, 104);
+      this.readPieces.Name = "readPieces";
+      this.readPieces.Size = new System.Drawing.Size(110, 33);
+      this.readPieces.TabIndex = 14;
+      this.readPieces.Text = "ピース読み込み";
+      this.readPieces.UseVisualStyleBackColor = true;
+      this.readPieces.Click += new System.EventHandler(this.readPieces_Click);
+      // 
+      // readFrame
+      // 
+      this.readFrame.Enabled = false;
+      this.readFrame.Location = new System.Drawing.Point(36, 156);
+      this.readFrame.Name = "readFrame";
+      this.readFrame.Size = new System.Drawing.Size(110, 33);
+      this.readFrame.TabIndex = 15;
+      this.readFrame.Text = "枠読み込み";
+      this.readFrame.UseVisualStyleBackColor = true;
+      this.readFrame.Click += new System.EventHandler(this.readFrame_Click);
+      // 
+      // frameparam2
+      // 
+      this.frameparam2.Location = new System.Drawing.Point(99, 212);
+      this.frameparam2.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+      this.frameparam2.Name = "frameparam2";
+      this.frameparam2.Size = new System.Drawing.Size(47, 23);
+      this.frameparam2.TabIndex = 16;
+      this.frameparam2.Value = new decimal(new int[] {
+            10,
+            0,
+            0,
+            65536});
+      // 
+      // frameparam1
+      // 
+      this.frameparam1.DecimalPlaces = 1;
+      this.frameparam1.Location = new System.Drawing.Point(36, 212);
+      this.frameparam1.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+      this.frameparam1.Name = "frameparam1";
+      this.frameparam1.Size = new System.Drawing.Size(47, 23);
+      this.frameparam1.TabIndex = 17;
+      this.frameparam1.Value = new decimal(new int[] {
+            5,
+            0,
+            0,
+            65536});
+      // 
       // WakuAndPiece
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.ClientSize = new System.Drawing.Size(1192, 654);
+      this.Controls.Add(this.frameparam1);
+      this.Controls.Add(this.frameparam2);
+      this.Controls.Add(this.readFrame);
+      this.Controls.Add(this.readPieces);
+      this.Controls.Add(this.beamWidth);
       this.Controls.Add(this.problemState);
       this.Controls.Add(this.framePanel);
       this.Controls.Add(this.listSwitchCombo);
@@ -191,6 +278,9 @@
       this.Load += new System.EventHandler(this.WakuAndPiece_Load);
       ((System.ComponentModel.ISupportInitialize)(this.canvas)).EndInit();
       this.textboxPanel.ResumeLayout(false);
+      ((System.ComponentModel.ISupportInitialize)(this.beamWidth)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this.frameparam2)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this.frameparam1)).EndInit();
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -210,6 +300,11 @@
     private System.Windows.Forms.Panel framePanel;
     private System.Windows.Forms.ComboBox listSwitchCombo;
     private System.Windows.Forms.Label problemState;
+    private System.Windows.Forms.NumericUpDown beamWidth;
+    private System.Windows.Forms.Button readPieces;
+    private System.Windows.Forms.Button readFrame;
+    private System.Windows.Forms.NumericUpDown frameparam2;
+    private System.Windows.Forms.NumericUpDown frameparam1;
   }
 }
 

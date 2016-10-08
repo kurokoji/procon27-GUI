@@ -19,6 +19,8 @@ namespace WakuAndPiece {
     const string problemExtension = "kudo";
     const string answerExtension = "shinobu";
 
+    string FileName;
+
     public WakuAndPiece() {
       InitializeComponent();
       this.state = new FormState();
@@ -129,6 +131,7 @@ namespace WakuAndPiece {
     private void outputSolve_Click(object sender, EventArgs e) {
 
       ProcessStartInfo processInfo = new ProcessStartInfo(@"C:\Users\mi151309\Dropbox\kurokoji\procon27dev\osolver\build\solver.exe");
+      processInfo.Arguments = beamWidth.Value.ToString();
       processInfo.UseShellExecute = false;
       processInfo.RedirectStandardInput = true;
       processInfo.RedirectStandardOutput = true;
@@ -177,30 +180,17 @@ namespace WakuAndPiece {
       this.textboxPanel.Controls.Add(canvas);
       this.canvas.Location = new Point(0, 0);
       listSwitchCombo.DropDownStyle = ComboBoxStyle.DropDownList;
-    }
-
-    /* 解答の保存をする際のボタン */
-    private void SaveAns_Click(object sender, EventArgs e) {
       // 日付の取得
       DateTime nowDate = DateTime.Now;
       
       // 保存するファイルの名前
-      string name = nowDate.ToString("yyyy_MM_dd_HH_mm_ss");
-      string problemFileName = String.Format("Problem_{0}.{1}", name, problemExtension);
-      string answerFileName = String.Format("Answer_{0}.{1}", name, answerExtension);
+      FileName = nowDate.ToString("yyyy_MM_dd_HH_mm_ss");
+    }
 
-      // 問題
-      using (StreamWriter sw = new StreamWriter(problemFileName)) {
-        problem.toStream(sw);
-      }
-      // 解答
-      using (StreamWriter sw = new StreamWriter(answerFileName)) {
-        sw.WriteLine(piecesMove.Length);
-        foreach (PieceMove pm in piecesMove) {
-          sw.WriteLine(pm.ID);
-          pm.toStream(sw);
-        }
-      }
+    /* 解答の保存をする際のボタン */
+    private void SaveAns_Click(object sender, EventArgs e) {
+      saveproblem(String.Format("Problem_{0}.{1}", FileName, problemExtension));
+      saveans(String.Format("Answer_{0}.{1}", FileName, answerExtension));
     }
 
     /* 過去の問題と解答の読み込み */
@@ -237,6 +227,107 @@ namespace WakuAndPiece {
 
     private void listSwitchCombo_SelectedIndexChanged(object sender, EventArgs e) {
       problem.showpieceList(pieceListpanel, listSwitchCombo.SelectedIndex);
+    }
+    
+    // ピースだけ読み込み
+    private void readPieces_Click(object sender, EventArgs e) {
+      string command = @"/c python C:\Users\mi151309\Dropbox\kurokoji\procon27dev\pyscaller\performance\pieces_detector.py ";
+      ProcessStartInfo readQuestInfo = new ProcessStartInfo("cmd.exe");
+      readQuestInfo.UseShellExecute = false;
+      readQuestInfo.RedirectStandardOutput = true;
+      readQuestInfo.RedirectStandardError = true;
+
+      OpenFileDialog ofd = new OpenFileDialog();
+      ofd.Filter = String.Format("{0}ファイル(*.{0})|*.{0}|すべてのファイル(*.*)|*.*", "jpg");
+      ofd.Multiselect = true;
+      ofd.RestoreDirectory = true;
+      if (ofd.ShowDialog() != DialogResult.OK) {
+        return;
+      }
+      var path_params = string.Join(" ", ofd.FileNames.Select(Path.GetFullPath));
+      command += path_params;
+
+      readQuestInfo.Arguments = command;
+
+      // 読み込みプロセスの開始
+      using (Process readQuestreader = Process.Start(readQuestInfo)) {
+        string err = readQuestreader.StandardError.ReadToEnd();
+        string output = readQuestreader.StandardOutput.ReadToEnd();
+        readQuestreader.WaitForExit();
+        // フレーム,ピース情報を読み込む
+        try {
+          problem = Problem.fromStream(new StringReader(output), true);
+          readFrame.Enabled = true;
+        }
+        catch (Exception exc) {
+          MessageBox.Show(err + "::\n" + exc.ToString(), "[Error]");
+        }
+      }
+
+      // ID被りがあったピースが1個以上あればID変更フォームを表示
+      if (problem.missingPieces.Count > 0) {
+        ChangeID changeid = new ChangeID(problem, pieceListpanel);
+        changeid.Show();
+      } else {
+        // リストへの描画
+        problem.showpieceList(pieceListpanel);
+      }
+      problemState.Text = "全ピース数: " + problem.pieces.Length + "枚";
+    }
+
+    // 枠のみ読み込み
+    private void readFrame_Click(object sender, EventArgs e) {
+      string command = @"/c python C:\Users\mi151309\Dropbox\kurokoji\procon27dev\pyscaller\performance\frame_detector.py ";
+      ProcessStartInfo readQuestInfo = new ProcessStartInfo("cmd.exe");
+      readQuestInfo.UseShellExecute = false;
+      readQuestInfo.RedirectStandardOutput = true;
+      readQuestInfo.RedirectStandardError = true;
+
+      OpenFileDialog ofd = new OpenFileDialog();
+      ofd.Filter = String.Format("{0}ファイル(*.{0})|*.{0}|すべてのファイル(*.*)|*.*", "jpg");
+      ofd.Multiselect = true;
+      ofd.RestoreDirectory = true;
+      if (ofd.ShowDialog() != DialogResult.OK) {
+        return;
+      }
+      var path_params = string.Join(" ", ofd.FileNames.Select(Path.GetFullPath));
+      MessageBox.Show(frameparam1.Value.ToString() + " " + frameparam2.Value.ToString());
+      command += path_params + " " + frameparam1.Value + " " + frameparam2.Value;
+
+      readQuestInfo.Arguments = command;
+
+      // 読み込みプロセスの開始
+      using (Process readQuestreader = Process.Start(readQuestInfo)) {
+        string err = readQuestreader.StandardError.ReadToEnd();
+        readQuestreader.WaitForExit();
+        // フレーム,ピース情報を読み込む
+        try {
+          problem = new Problem(Frame.fromStream(readQuestreader.StandardOutput), problem.pieces, problem.missingPieces);
+        } catch (Exception exc) {
+          MessageBox.Show(err + "::\n" + exc.ToString(), "[Error]");
+        }
+      }
+      problem.framedraw(framePanel);
+      saveproblem(String.Format("Problem_{0}.{1}", FileName, problemExtension));
+    }
+
+    private void saveproblem(string s) {
+
+      // 問題
+      using (StreamWriter sw = new StreamWriter(s)) {
+        problem.toStream(sw);
+      }
+    }
+
+    private void saveans(string s) {
+      // 解答
+      using (StreamWriter sw = new StreamWriter(s)) {
+        sw.WriteLine(piecesMove.Length);
+        foreach (PieceMove pm in piecesMove) {
+          sw.WriteLine(pm.ID);
+          pm.toStream(sw);
+        }
+      }
     }
   }
 
@@ -502,6 +593,7 @@ namespace WakuAndPiece {
   // フレーム
   public class Frame {
     public Hole[] holes { get; }
+    public Frame() { }
     // 穴情報をセットするコンストラクタ
     public Frame(Hole[] holes) {
       this.holes = holes;
@@ -536,14 +628,21 @@ namespace WakuAndPiece {
     public List<Piece> missingPieces;
 
     // フレーム情報とピース情報をセットするコンストラクタ
-    private Problem(Frame frame, Piece[] pieces, List<Piece> missingPieces) {
+    public Problem(Frame frame, Piece[] pieces, List<Piece> missingPieces) {
       this.frame = frame;
       this.pieces = pieces;
       this.missingPieces = missingPieces;
     }
+
+    public Problem(Piece[] pieces, List<Piece> missingPieces) {
+      this.pieces = pieces;
+      this.missingPieces = missingPieces;
+    }
+
     // Streamから各情報を読み取る
-    public static Problem fromStream(TextReader sr) {
-      Frame frame = Frame.fromStream(sr);
+    public static Problem fromStream(TextReader sr, bool onlyp = false) {
+      Frame frame = new Frame();
+      if (!onlyp) frame = Frame.fromStream(sr);
       // 要素数の入力
       int N = int.Parse(sr.ReadLine());
       // 要素数分だけ確保(最終的に渡す用)
@@ -572,7 +671,7 @@ namespace WakuAndPiece {
         }
       }
 
-      return new Problem(frame, respieces, missingPieces);
+      return !onlyp ? new Problem(frame, respieces, missingPieces) : new Problem(respieces, missingPieces);
     }
 
     // Streamに出力
