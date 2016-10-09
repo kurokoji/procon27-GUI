@@ -40,18 +40,27 @@ namespace WakuAndPiece {
       this.state.problemChanged += (x) => {
         listSwitchCombo.SelectedIndex = 0;
       };
+      this.state.problemChanged += (x) => {
+        this.mergePiecesSolve.Enabled = x != null;
+      };
+      this.state.mergepiecesChanged += (x) => {
+        this.showmergePieces.Enabled = x != null;
+      };
     }
     
     // 状態(変更があったか)を表すクラス
     class FormState {
       public delegate void PieceMoveDelegate(PieceMove[] piecesMove);
       public delegate void ProblemDelegate(Problem problem);
+      public delegate void MergePieceDelegate(Piece[] mergepieces);
 
       private PieceMove[] piecesMove_;
       private Problem problem_;
+      private Piece[] mergepieces_;
 
       public PieceMoveDelegate piecesMoveChanged;
       public ProblemDelegate problemChanged;
+      public MergePieceDelegate mergepiecesChanged;
 
       public PieceMove[] piecesMove {
         get { return this.piecesMove_; }
@@ -67,6 +76,13 @@ namespace WakuAndPiece {
           problemChanged(this.problem_);
         }
       }
+      public Piece[] mergepieces {
+        get { return this.mergepieces_; }
+        set {
+          this.mergepieces_ = value;
+          mergepiecesChanged(this.mergepieces_);
+        }
+      }
     };
 
     FormState state;
@@ -78,6 +94,10 @@ namespace WakuAndPiece {
     PieceMove[] piecesMove {
       get { return state.piecesMove; }
       set { state.piecesMove = value; }
+    }
+    Piece[] mergepieces {
+      get { return state.mergepieces; }
+      set { state.mergepieces = value; }
     }
 
     /* フレーム,ピース情報の読み込み */
@@ -273,6 +293,8 @@ namespace WakuAndPiece {
         problem.showpieceList(pieceListpanel);
       }
       problemState.Text = "全ピース数: " + problem.pieces.Length + "枚";
+
+      saveproblem(String.Format("Problem_{0}.{1}", FileName, problemExtension));
     }
 
     // 枠のみ読み込み
@@ -281,7 +303,7 @@ namespace WakuAndPiece {
       ProcessStartInfo readQuestInfo = new ProcessStartInfo("cmd.exe");
       readQuestInfo.UseShellExecute = false;
       readQuestInfo.RedirectStandardOutput = true;
-      readQuestInfo.RedirectStandardError = true;
+      //readQuestInfo.RedirectStandardError = true;
 
       OpenFileDialog ofd = new OpenFileDialog();
       ofd.Filter = String.Format("{0}ファイル(*.{0})|*.{0}|すべてのファイル(*.*)|*.*", "jpg");
@@ -291,24 +313,22 @@ namespace WakuAndPiece {
         return;
       }
       var path_params = string.Join(" ", ofd.FileNames.Select(Path.GetFullPath));
-      MessageBox.Show(frameparam1.Value.ToString() + " " + frameparam2.Value.ToString());
       command += path_params + " " + frameparam1.Value + " " + frameparam2.Value;
 
       readQuestInfo.Arguments = command;
 
       // 読み込みプロセスの開始
       using (Process readQuestreader = Process.Start(readQuestInfo)) {
-        string err = readQuestreader.StandardError.ReadToEnd();
-        readQuestreader.WaitForExit();
+        //string err = readQuestreader.StandardError.ReadToEnd();
+        //readQuestreader.WaitForExit();
         // フレーム,ピース情報を読み込む
         try {
           problem = new Problem(Frame.fromStream(readQuestreader.StandardOutput), problem.pieces, problem.missingPieces);
         } catch (Exception exc) {
-          MessageBox.Show(err + "::\n" + exc.ToString(), "[Error]");
+          MessageBox.Show("::\n" + exc.ToString(), "[Error]");
         }
       }
       problem.framedraw(framePanel);
-      saveproblem(String.Format("Problem_{0}.{1}", FileName, problemExtension));
     }
 
     private void saveproblem(string s) {
@@ -327,6 +347,42 @@ namespace WakuAndPiece {
           sw.WriteLine(pm.ID);
           pm.toStream(sw);
         }
+      }
+    }
+
+    // 合成ピースの読み込み(合成用のsolverに投げる)
+    private void mergePiecesSolve_Click(object sender, EventArgs e) {
+      ProcessStartInfo processInfo = new ProcessStartInfo(@"C:\Users\mi151309\Dropbox\kurokoji\procon27dev\osolver\build\solver.exe");
+      processInfo.UseShellExecute = false;
+      processInfo.RedirectStandardInput = true;
+      processInfo.RedirectStandardOutput = true;
+
+      using (Process processSolver = Process.Start(processInfo)) {
+        processSolver.StandardInput.Flush();
+        string text = processSolver.StandardOutput.ReadToEnd();
+        processSolver.WaitForExit();
+
+        using (TextReader tr = new StringReader(text)) {
+          int N = int.Parse(tr.ReadLine());
+          mergepieces = new Piece[N];
+          for (int i = 0; i < N; ++i) {
+            int ID = int.Parse(tr.ReadLine());
+            mergepieces[ID] = Piece.fromStream(tr, ID, problem.pieces[ID].brush);
+          }
+        }
+      }
+    }
+
+    private void showmergePieces_Click(object sender, EventArgs e) {
+      canvas.Image = new Bitmap(canvas.Width, canvas.Height);
+      using (Graphics g = Graphics.FromImage(canvas.Image)) {
+        // アンチエイリアス
+        g.SmoothingMode = SmoothingMode.AntiAlias;
+        // 子コントロールをclear
+        canvas.Controls.Clear();
+        foreach (Piece pol in mergepieces) {
+          pol.draw(g, pol.brush, canvas);
+        }      
       }
     }
   }
@@ -482,6 +538,21 @@ namespace WakuAndPiece {
         vertices[i] = new Vertex(x, y);
       }
       return new Polygon(vertices);
+    }
+
+    public static Polygon fromStream(TextReader tr, int ID, Brush brush) {
+      // 要素数を入力
+      int N = int.Parse(tr.ReadLine());
+      // 要素数分だけ確保
+      Vertex[] vertices = new Vertex[N];
+      for (int i = 0; i < N; i++) {
+        // 座標を入力
+        string[] tokens = tr.ReadLine().Split(' ');
+        double x = double.Parse(tokens[0]);
+        double y = double.Parse(tokens[1]);
+        vertices[i] = new Vertex(x, y);
+      }
+      return new Polygon(vertices, ID, brush);
     }
 
     //const int ID_WIDTH = 70;
@@ -774,7 +845,7 @@ namespace WakuAndPiece {
         g.SmoothingMode = SmoothingMode.AntiAlias;
         Random rng = new Random();
         foreach (Polygon pol in orgframe.holes) {
-          PointF[] points = pol.vertices.Select((x) => (x * 0.5).toPointF()).ToArray();
+          PointF[] points = pol.vertices.Select((x) => (x * 0.3).toPointF()).ToArray();
           // 直線で描画
           g.DrawPolygon(new Pen(Color.DarkBlue, 3), points);
           // 頂点の描画

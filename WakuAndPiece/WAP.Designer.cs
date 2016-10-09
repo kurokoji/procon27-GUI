@@ -40,6 +40,8 @@
       this.readFrame = new System.Windows.Forms.Button();
       this.frameparam2 = new System.Windows.Forms.NumericUpDown();
       this.frameparam1 = new System.Windows.Forms.NumericUpDown();
+      this.mergePiecesSolve = new System.Windows.Forms.Button();
+      this.showmergePieces = new System.Windows.Forms.Button();
       ((System.ComponentModel.ISupportInitialize)(this.canvas)).BeginInit();
       this.textboxPanel.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.beamWidth)).BeginInit();
@@ -50,7 +52,7 @@
       // drawPieces
       // 
       this.drawPieces.Enabled = false;
-      this.drawPieces.Location = new System.Drawing.Point(36, 308);
+      this.drawPieces.Location = new System.Drawing.Point(36, 295);
       this.drawPieces.Name = "drawPieces";
       this.drawPieces.Size = new System.Drawing.Size(110, 33);
       this.drawPieces.TabIndex = 3;
@@ -61,7 +63,7 @@
       // readFramePiece
       // 
       this.readFramePiece.Enabled = false;
-      this.readFramePiece.Location = new System.Drawing.Point(36, 52);
+      this.readFramePiece.Location = new System.Drawing.Point(36, 15);
       this.readFramePiece.Name = "readFramePiece";
       this.readFramePiece.Size = new System.Drawing.Size(110, 33);
       this.readFramePiece.TabIndex = 0;
@@ -72,7 +74,7 @@
       // outputSolve
       // 
       this.outputSolve.Enabled = false;
-      this.outputSolve.Location = new System.Drawing.Point(36, 256);
+      this.outputSolve.Location = new System.Drawing.Point(36, 248);
       this.outputSolve.Name = "outputSolve";
       this.outputSolve.Size = new System.Drawing.Size(110, 33);
       this.outputSolve.TabIndex = 1;
@@ -85,14 +87,14 @@
       this.canvas.BackColor = System.Drawing.Color.Transparent;
       this.canvas.Location = new System.Drawing.Point(-1, -1);
       this.canvas.Name = "canvas";
-      this.canvas.Size = new System.Drawing.Size(1820, 1028);
+      this.canvas.Size = new System.Drawing.Size(4000, 4000);
       this.canvas.TabIndex = 4;
       this.canvas.TabStop = false;
       // 
       // drawPiecesMove
       // 
       this.drawPiecesMove.Enabled = false;
-      this.drawPiecesMove.Location = new System.Drawing.Point(36, 360);
+      this.drawPiecesMove.Location = new System.Drawing.Point(36, 342);
       this.drawPiecesMove.Name = "drawPiecesMove";
       this.drawPiecesMove.Size = new System.Drawing.Size(110, 34);
       this.drawPiecesMove.TabIndex = 5;
@@ -122,7 +124,7 @@
       // saveAns
       // 
       this.saveAns.Enabled = false;
-      this.saveAns.Location = new System.Drawing.Point(36, 413);
+      this.saveAns.Location = new System.Drawing.Point(36, 437);
       this.saveAns.Name = "saveAns";
       this.saveAns.Size = new System.Drawing.Size(110, 33);
       this.saveAns.TabIndex = 7;
@@ -132,7 +134,7 @@
       // 
       // oldProAns
       // 
-      this.oldProAns.Location = new System.Drawing.Point(36, 465);
+      this.oldProAns.Location = new System.Drawing.Point(36, 484);
       this.oldProAns.Name = "oldProAns";
       this.oldProAns.Size = new System.Drawing.Size(110, 33);
       this.oldProAns.TabIndex = 8;
@@ -178,7 +180,7 @@
       // 
       // beamWidth
       // 
-      this.beamWidth.Location = new System.Drawing.Point(36, 526);
+      this.beamWidth.Location = new System.Drawing.Point(36, 547);
       this.beamWidth.Maximum = new decimal(new int[] {
             10000,
             0,
@@ -195,7 +197,7 @@
       // 
       // readPieces
       // 
-      this.readPieces.Location = new System.Drawing.Point(36, 104);
+      this.readPieces.Location = new System.Drawing.Point(36, 61);
       this.readPieces.Name = "readPieces";
       this.readPieces.Size = new System.Drawing.Size(110, 33);
       this.readPieces.TabIndex = 14;
@@ -206,7 +208,7 @@
       // readFrame
       // 
       this.readFrame.Enabled = false;
-      this.readFrame.Location = new System.Drawing.Point(36, 156);
+      this.readFrame.Location = new System.Drawing.Point(36, 108);
       this.readFrame.Name = "readFrame";
       this.readFrame.Size = new System.Drawing.Size(110, 33);
       this.readFrame.TabIndex = 15;
@@ -216,7 +218,7 @@
       // 
       // frameparam2
       // 
-      this.frameparam2.Location = new System.Drawing.Point(99, 212);
+      this.frameparam2.Location = new System.Drawing.Point(99, 207);
       this.frameparam2.Maximum = new decimal(new int[] {
             10000,
             0,
@@ -234,7 +236,7 @@
       // frameparam1
       // 
       this.frameparam1.DecimalPlaces = 1;
-      this.frameparam1.Location = new System.Drawing.Point(36, 212);
+      this.frameparam1.Location = new System.Drawing.Point(36, 207);
       this.frameparam1.Maximum = new decimal(new int[] {
             10000,
             0,
@@ -249,11 +251,35 @@
             0,
             65536});
       // 
+      // mergePiecesSolve
+      // 
+      this.mergePiecesSolve.Enabled = false;
+      this.mergePiecesSolve.Location = new System.Drawing.Point(36, 155);
+      this.mergePiecesSolve.Name = "mergePiecesSolve";
+      this.mergePiecesSolve.Size = new System.Drawing.Size(110, 38);
+      this.mergePiecesSolve.TabIndex = 18;
+      this.mergePiecesSolve.Text = "合成ピース\r\n読み込み";
+      this.mergePiecesSolve.UseVisualStyleBackColor = true;
+      this.mergePiecesSolve.Click += new System.EventHandler(this.mergePiecesSolve_Click);
+      // 
+      // showmergePieces
+      // 
+      this.showmergePieces.Enabled = false;
+      this.showmergePieces.Location = new System.Drawing.Point(36, 390);
+      this.showmergePieces.Name = "showmergePieces";
+      this.showmergePieces.Size = new System.Drawing.Size(110, 33);
+      this.showmergePieces.TabIndex = 19;
+      this.showmergePieces.Text = "合成ピース描画";
+      this.showmergePieces.UseVisualStyleBackColor = true;
+      this.showmergePieces.Click += new System.EventHandler(this.showmergePieces_Click);
+      // 
       // WakuAndPiece
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.ClientSize = new System.Drawing.Size(1192, 654);
+      this.ClientSize = new System.Drawing.Size(1351, 741);
+      this.Controls.Add(this.showmergePieces);
+      this.Controls.Add(this.mergePiecesSolve);
       this.Controls.Add(this.frameparam1);
       this.Controls.Add(this.frameparam2);
       this.Controls.Add(this.readFrame);
@@ -305,6 +331,8 @@
     private System.Windows.Forms.Button readFrame;
     private System.Windows.Forms.NumericUpDown frameparam2;
     private System.Windows.Forms.NumericUpDown frameparam1;
+    private System.Windows.Forms.Button mergePiecesSolve;
+    private System.Windows.Forms.Button showmergePieces;
   }
 }
 
